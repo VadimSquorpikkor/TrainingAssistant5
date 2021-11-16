@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "508809143810",
+    "project_id": "trainingassistant5",
+    "storage_bucket": "trainingassistant5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508809143810:android:5b4e2fc3cd4791c562691b",
+        "android_client_info": {
+          "package_name": "com.squorpikkor.trainingassistant5"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "508809143810-nm7q66vgebbkjt3t287ghgnh17mnf8dn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.squorpikkor.trainingassistant5",
+            "certificate_hash": "061a605120a2a4e15694c1b765e64f80a6570613"
+          }
+        },
+        {
+          "client_id": "508809143810-btctcuqvqrer223ms96ebo9775tv6bjc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDslmjAJWIDNC8XFt470UhHvjchGMQda0w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "508809143810-btctcuqvqrer223ms96ebo9775tv6bjc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
