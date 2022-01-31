@@ -1,0 +1,52 @@
+package com.squorpikkor.trainingassistant5;
+
+import static com.squorpikkor.trainingassistant5.App.TAG;
+
+import android.util.Log;
+
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import com.google.firebase.auth.FirebaseAuth;
+
+public class MainViewModel extends ViewModel {
+
+    private final FirebaseAuth mAuth;
+    private final MutableLiveData<Boolean> askAccount;
+
+    public MainViewModel() {
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
+        askAccount = new MutableLiveData<>(false);
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null && FirebaseAuth.getInstance().getCurrentUser().getEmail() != null) {
+            Log.e(TAG, "*********************************************onCreate: "+FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            checkUserEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        } else{
+            signInDialog();
+        }
+    }
+
+    public MutableLiveData<Boolean> getAskAccount() {
+        return askAccount;
+    }
+
+    private void signInDialog() {
+
+    }
+
+    public void checkUserEmail(String email) {
+        dbh.checkUser(email, canWork, locations);//todo здесь будет переводчик (Bridge)
+    }
+
+    public void setLoginAndPassword(String login, String password) {
+//        saveLogin(login);
+//        bridge.createMainKey(this.pass, this.login);
+    }
+
+
+    public FirebaseAuth getAuth() {
+        return mAuth;
+    }
+}
