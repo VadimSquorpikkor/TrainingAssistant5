@@ -6,7 +6,7 @@ import android.util.Log;
 
 public class App extends Application {
 
-    public static final String TAG = "myTag";
+    public static final String TAG = "Tag";
     private static Application mApplication;
 
     @Override

@@ -12,7 +12,7 @@
         android:id="@+id/editTextEmail"
         style="@style/dialogLinearEdit"
         android:background="@drawable/edit_text_field"
-        android:text="uniqdela@gmail.com"
+        tools:text="someemail@gmail.com"
         android:importantForAutofill="no"
         tools:ignore="LabelFor" />
 
@@ -20,11 +20,12 @@
         android:id="@+id/editTextPassword"
         style="@style/dialogLinearEdit"
         android:background="@drawable/edit_text_field"
-        android:text="123456"
+        tools:text="11111"
         android:importantForAutofill="no"
         tools:ignore="LabelFor" />
 
     <TextView
+        android:id="@+id/sign_in_button"
         style="@style/nice_button"
         android:text="ok" />
 

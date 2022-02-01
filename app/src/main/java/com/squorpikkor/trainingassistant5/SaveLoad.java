@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import java.util.ArrayList;
 
 public class SaveLoad {
+
     //TODO может всё хранить в PreferenceManager.getDefaultSharedPreferences? Надо почитать, в чем разница
     static SharedPreferences mPrefPrivate = App.getContext().getSharedPreferences("pref", Context.MODE_PRIVATE);
     static SharedPreferences mPrefManager = PreferenceManager.getDefaultSharedPreferences(App.getContext());
@@ -19,6 +20,9 @@ public class SaveLoad {
     }
     public static void save(String key, boolean param) {
         mPrefPrivate.edit().putBoolean(key, param).apply();
+    }
+    public static void save(String key, String param) {
+        mPrefPrivate.edit().putString(key, param).apply();
     }
     /**Загрузка String по ключу*/
     public static String loadString(String key) {
@@ -40,21 +44,43 @@ public class SaveLoad {
         if (mPrefPrivate.contains(key)) return mPrefPrivate.getBoolean(key, false);
         return false;
     }
+
     /**Загрузка настройки boolean, заданной через preferenceActivity, по ключу из resId*/
     public static boolean getPrefBoolean(int resId) {
         String key = App.getContext().getString(resId);
-        if (mPrefManager.contains(key)) return Boolean.getBoolean(mPrefManager.getString(key, "false"));
+        if (mPrefManager.contains(key)) return mPrefManager.getBoolean(key, false);
         return false;
     }
-    /**Загрузка настройки boolean, заданной через preferenceActivity, по ключу из resId*/
+
+    public static boolean getPrefBoolean(String key) {
+        if (mPrefManager.contains(key)) return mPrefManager.getBoolean(key, false);
+        return false;
+    }
+
+    public static boolean getPrefBoolean(String key, boolean defValue) {
+        if (mPrefManager.contains(key)) return mPrefManager.getBoolean(key, defValue);
+        return defValue;
+    }
+
+    /**Загрузка настройки int, заданной через preferenceActivity, по ключу из resId*/
     public static int getPrefInt(int resId) {
         String key = App.getContext().getString(resId);
         if (mPrefManager.contains(key)) return Integer.parseInt(mPrefManager.getString(key, "0"));
         return 0;
     }
-    /**Загрузка настройки boolean, заданной через preferenceActivity, по ключу из resId*/
+    public static int getPrefInt(String key) {
+//не нужно, всё равно в prefFragment можно только через @string/key_name имя задать, т.е. через int
+        if (mPrefManager.contains(key)) return Integer.parseInt(mPrefManager.getString(key, "0"));
+        return 0;
+    }
+    /**Загрузка настройки int, заданной через preferenceActivity, по ключу из resId*/
     public static int getPrefInt(int resId, int defValue) {
         String key = App.getContext().getString(resId);
+        if (mPrefManager.contains(key)) return Integer.parseInt(mPrefManager.getString(key, String.valueOf(defValue)));
+        return defValue;
+    }
+    public static int getPrefInt(String key, int defValue) {
+//не нужно, всё равно в prefFragment можно только через @string/key_name имя задать, т.е. через int
         if (mPrefManager.contains(key)) return Integer.parseInt(mPrefManager.getString(key, String.valueOf(defValue)));
         return defValue;
     }

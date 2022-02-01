@@ -4,6 +4,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.squorpikkor.trainingassistant5.App.TAG;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,14 +13,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Collections;
+import java.util.List;
+
 public class LoginFragment extends Fragment {
+
+    private static final String KEY_FILE_SELECTED = "qwerty";
+
 
     private static final int REQUEST_CODE = 100;
     /**
@@ -40,15 +51,39 @@ public class LoginFragment extends Fragment {
 
     private static final String PASS = "pass";
 
+    ActivityResultLauncher<Intent> activityResultLauncher;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ThemeUtils.onActivityCreateSetTheme(getActivity());
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         mViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
+        activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Log.e(TAG, "onCreateView: ");
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        IdpResponse response = IdpResponse.fromResultIntent(data);
+                        Log.e(TAG, "onCreateView: "+response.getEmail());
+                        //mViewModel.checkUserEmail(response.getEmail());
+                    }
+                });
+
+
         if (FirebaseAuth.getInstance().getCurrentUser() != null && FirebaseAuth.getInstance().getCurrentUser().getEmail() != null) {
-            //todo open fragment
-        } else signIn();
+            Log.e(TAG, "*********************************************onCreate: "+FirebaseAuth.getInstance().getCurrentUser().getEmail());
+//            mViewModel.checkUserEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        } else{
+            Log.e(TAG, "onCreateView: NuLL");
+            //mViewModel.getLocationName().setValue(EMPTY_LOCATION_NAME);
+            signIn();
+        }
+
+
+//        getUserEmail();
+//        signIn();
 
         EditText emailText = view.findViewById(R.id.editTextEmail);
         EditText passwordText = view.findViewById(R.id.editTextPassword);
@@ -63,8 +98,21 @@ public class LoginFragment extends Fragment {
             signInWithEmailAndPassword(email, passwordText.getText().toString(), false);
         });
 
+
+
+
+
         return view;
     }
+
+    /*private void signIn() {
+        List<AuthUI.IdpConfig> providers = Collections.singletonList( new AuthUI.IdpConfig.GoogleBuilder().build());
+        AuthUI.getInstance().signOut(requireActivity());
+        Intent intent = AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build();
+        activityResultLauncher.launch(intent);
+    }*/
+
+
 
     private void signIn() {
         Intent googlePicker = AccountPicker.newChooseAccountIntent(null, null, new String[]{GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE}, true, null, null, null, null);
@@ -79,6 +127,37 @@ public class LoginFragment extends Fragment {
             mViewModel.getDeviceAccountEmail().setValue(accountName);
         }
     }
+
+
+
+
+    /*private void signIn() {
+        Log.e(TAG, "signIn: ");
+        List<AuthUI.IdpConfig> providers = Collections.singletonList(
+                new AuthUI.IdpConfig.GoogleBuilder().build());
+        AuthUI.getInstance().signOut(requireActivity());
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .build(),
+                REQUEST_CODE);
+        Log.e(TAG, "signIn: End");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e(TAG, "onActivityResult: REQUEST CODE = "+requestCode);
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+            if (resultCode == RESULT_OK) {
+                Log.e(TAG, "******************************onActivityResult: OK");
+            } else {
+                Log.e(TAG, "******************************onActivityResult: NOT OK");
+            }
+        }
+    }*/
 
     private void signInWithEmailAndPassword(String email, String password, boolean savePass) {
         if (email==null || password==null) return;
