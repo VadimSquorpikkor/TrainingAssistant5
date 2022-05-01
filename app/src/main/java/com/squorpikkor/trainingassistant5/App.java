@@ -27,6 +27,6 @@ public class App extends Application {
         Log.e(TAG, "║║╚╗║║╔╗╔╝║╚═╝║║║╚╗ ║   ╚══╗║║║ ╔╗║╚═╝║║║╚╗ ║║║╚╗ ║║╔══╝║╔╗╔╝");
         Log.e(TAG, "║╚═╝║║║║╚╗║╔═╗║║║ ║ ║   ║╚═╝║║╚═╝║║╔═╗║║║ ║ ║║║ ║ ║║╚══╗║║║╚╗");
         Log.e(TAG, "╚═══╝╚╝╚═╝╚╝ ╚╝╚╝ ╚═╝   ╚═══╝╚═══╝╚╝ ╚╝╚╝ ╚═╝╚╝ ╚═╝╚═══╝╚╝╚═╝");
-        Log.e(TAG, "♣VERSION_NAME: " + BuildConfig.VERSION_NAME);
+//        Log.e(TAG, "♣VERSION_NAME: " + BuildConfig.VERSION_NAME);
     }
 }

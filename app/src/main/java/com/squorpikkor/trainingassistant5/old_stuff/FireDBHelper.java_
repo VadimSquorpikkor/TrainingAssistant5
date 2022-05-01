@@ -1,8 +1,8 @@
-package com.squorpikkor.trainingassistant5;
+package com.squorpikkor.trainingassistant5.old_stuff;
 
 import static com.squorpikkor.trainingassistant5.App.TAG;
-import static com.squorpikkor.trainingassistant5.Constants.TABLE_USERS;
-import static com.squorpikkor.trainingassistant5.Constants.USERS_EMAIL;
+import static com.squorpikkor.trainingassistant5.old_stuff.Constants.TABLE_USERS;
+import static com.squorpikkor.trainingassistant5.old_stuff.Constants.USERS_EMAIL;
 
 import android.util.Log;
 

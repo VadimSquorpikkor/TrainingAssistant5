@@ -1,7 +1,7 @@
 package com.squorpikkor.trainingassistant5;
 
-import static com.squorpikkor.trainingassistant5.SaveLoad.loadInt;
-import static com.squorpikkor.trainingassistant5.SaveLoad.save;
+import static com.squorpikkor.trainingassistant5.old_stuff.SaveLoad.loadInt;
+import static com.squorpikkor.trainingassistant5.old_stuff.SaveLoad.save;
 
 import android.app.Activity;
 

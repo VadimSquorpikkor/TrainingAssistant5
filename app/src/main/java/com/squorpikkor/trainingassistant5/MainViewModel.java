@@ -1,63 +1,45 @@
 package com.squorpikkor.trainingassistant5;
 
-import static com.squorpikkor.trainingassistant5.App.TAG;
-
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.squorpikkor.trainingassistant5.data.DataBaseHelper;
+import com.squorpikkor.trainingassistant5.entity.Event;
+import com.squorpikkor.trainingassistant5.entity.Exercise;
+import com.squorpikkor.trainingassistant5.entity.Training;
 
 import java.util.ArrayList;
 
 public class MainViewModel extends ViewModel {
 
-    private final FirebaseAuth mAuth;
-    private final FireDBHelper db;
+    private final MutableLiveData<ArrayList<Event>> selectedEvents;
+    private final MutableLiveData<ArrayList<Exercise>> selectedExercise;
+    private final MutableLiveData<ArrayList<Training>> selectedTraining;
 
-    private final MutableLiveData<String> deviceAccountEmail;
-    private final MutableLiveData<Boolean> openTrainingFragment;
-
-    @SuppressWarnings("SpellCheckingInspection")
-    String userId; //7uA2VBPAvmn1SvIMCDVD
+    private final DataBaseHelper db;
 
     public MainViewModel() {
-        Log.e(TAG, "MainViewModel: start");
-        db = new FireDBHelper();
-        deviceAccountEmail = new MutableLiveData<>();
-        openTrainingFragment = new MutableLiveData<>(false);
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        //deviceAccountEmail.setValue(getUserEmail());
-
-
-        if (currentUser != null) {
-            Log.e(TAG, "MainViewModel: currentUser Email = " + currentUser.getEmail());
-            deviceAccountEmail.setValue(currentUser.getEmail());
-        } else {
-            Log.e(TAG, "MainViewModel: null");
-        }
+        selectedEvents   = new MutableLiveData<>(new ArrayList<>());
+        selectedExercise = new MutableLiveData<>(new ArrayList<>());
+        selectedTraining = new MutableLiveData<>(new ArrayList<>());
+        db = new DataBaseHelper(selectedEvents, selectedExercise, selectedTraining);
     }
 
-    public MutableLiveData<String> getDeviceAccountEmail() {
-        return deviceAccountEmail;
+    public MutableLiveData<ArrayList<Event>> getSelectedEvents() {
+        return selectedEvents;
     }
-    public MutableLiveData<Boolean> getOpenTrainingFragment() {
-        return openTrainingFragment;
+    public MutableLiveData<ArrayList<Exercise>> getSelectedExercise() {
+        return selectedExercise;
     }
-
-    public FirebaseAuth getAuth() {
-        return mAuth;
-    }
-
-    void getUserIdByEmail(String email) {
-        db.getUserIdByEmail(email, openTrainingFragment);
+    public MutableLiveData<ArrayList<Training>> getSelectedTraining() {
+        return selectedTraining;
     }
 
+    public void selectTraining(Training training) {
+        db.selectExerciseByTraining(training);
+    }
 
+    public void selectExercise(Exercise exercise) {
+
+    }
 }

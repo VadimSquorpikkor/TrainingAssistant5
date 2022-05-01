@@ -8,11 +8,17 @@
         <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/drawable/my_button_shape_pressed.xml" value="0.274" />
         <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/drawable/nice_button_shape_selector.xml" value="0.274" />
         <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/layout/activity_main.xml" value="0.3546875" />
-        <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/layout/fragment_login.xml" value="0.5" />
+        <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/layout/fragment_exercise.xml" value="0.20416666666666666" />
+        <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/layout/fragment_exercise_list.xml" value="0.20416666666666666" />
+        <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/layout/fragment_login.xml" value="0.33" />
+        <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/layout/fragment_training_list.xml" value="0.20416666666666666" />
+        <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/layout/item_base.xml" value="0.20416666666666666" />
+        <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/layout/item_exercise.xml" value="0.20416666666666666" />
+        <entry key="..\:/GitHub/TrainingAssistant5/app/src/main/res/layout/item_training.xml" value="0.20416666666666666" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

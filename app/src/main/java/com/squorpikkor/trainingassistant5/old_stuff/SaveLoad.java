@@ -1,8 +1,10 @@
-package com.squorpikkor.trainingassistant5;
+package com.squorpikkor.trainingassistant5.old_stuff;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.squorpikkor.trainingassistant5.App;
 
 import java.util.ArrayList;
 

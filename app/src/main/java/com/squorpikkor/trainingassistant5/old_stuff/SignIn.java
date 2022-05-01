@@ -1,4 +1,4 @@
-package com.squorpikkor.trainingassistant5;
+package com.squorpikkor.trainingassistant5.old_stuff;
 
 import static android.app.Activity.RESULT_OK;
 import static com.squorpikkor.trainingassistant5.App.TAG;

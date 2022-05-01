@@ -1,4 +1,4 @@
-package com.squorpikkor.trainingassistant5;
+package com.squorpikkor.trainingassistant5.old_stuff;
 
 class Constants {
    public static final String TABLE_USERS = "users";

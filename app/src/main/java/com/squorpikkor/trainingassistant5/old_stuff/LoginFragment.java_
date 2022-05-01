@@ -18,6 +18,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squorpikkor.trainingassistant5.old_stuff.MainViewModel;
+import com.squorpikkor.trainingassistant5.old_stuff.SaveLoad;
 
 public class LoginFragment extends Fragment {
 
