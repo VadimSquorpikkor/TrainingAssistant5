@@ -30,10 +30,10 @@ public class LoginFragment extends Fragment {
     }
 
     private void openInfoFragment() {
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, TrainingListFragment.newInstance())
-                .addToBackStack(null)
-                .commit();
+//        requireActivity().getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container, TrainingListFragment.newInstance())
+//                .addToBackStack(null)
+//                .commit();
     }
 
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.squorpikkor.trainingassistant5.entity.Event;
 import com.squorpikkor.trainingassistant5.entity.Exercise;
 import com.squorpikkor.trainingassistant5.entity.Training;
+import com.squorpikkor.trainingassistant5.entity.User;
 
 import java.util.ArrayList;
 
@@ -27,6 +28,7 @@ import java.util.ArrayList;
  * */
 public class DataBaseHelper {
 
+    private final Data db;
     private final MutableLiveData<ArrayList<Event>> selectedEvents;
     private final MutableLiveData<ArrayList<Exercise>> selectedExercise;
     private final MutableLiveData<ArrayList<Training>> selectedTraining;
@@ -37,9 +39,18 @@ public class DataBaseHelper {
         this.selectedEvents = selectedEvents;
         this.selectedExercise = selectedExercise;
         this.selectedTraining = selectedTraining;
+        this.db = new FirebaseDatabase();
     }
 
-    public void selectExerciseByTraining(Training training) {
+    public void getTrainings(User user) {
+        db.getTrainingsByUser(user, selectedTraining);
+    }
 
+    public void getExercises(Training training) {
+        db.getExerciseByTraining(training, selectedExercise);
+    }
+
+    public void getEvents(Exercise exercise) {
+        db.getEventByExercise(exercise, selectedEvents);
     }
 }

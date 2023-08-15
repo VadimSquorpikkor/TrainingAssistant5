@@ -43,10 +43,10 @@ public class ExerciseListFragment extends Fragment {
     }
 
     private void openInfoFragment() {
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, ExerciseFragment.newInstance())
-                .addToBackStack(null)
-                .commit();
+//        requireActivity().getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container, ExerciseFragment.newInstance())
+//                .addToBackStack(null)
+//                .commit();
     }
 
 }

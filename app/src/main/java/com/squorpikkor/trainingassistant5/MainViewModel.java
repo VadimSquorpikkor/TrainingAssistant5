@@ -35,8 +35,8 @@ public class MainViewModel extends ViewModel {
         return selectedTraining;
     }
 
-    public void selectTraining(Training training) {
-        db.selectExerciseByTraining(training);
+    public void selectExercise(Training training) {
+        db.getExercises(training);
     }
 
     public void selectExercise(Exercise exercise) {

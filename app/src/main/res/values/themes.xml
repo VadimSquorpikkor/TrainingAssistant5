@@ -1,15 +1,4 @@
 <resources>
-    <style name="Theme.TrainingAssistant5" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="coloredText">@color/main_orange</item>
-        <item name="smallTextColor">@color/white_for_text</item>
-        <item name="editTextBackgroundColor">@color/grey</item>
-
-        <item name="MyButtonColor">@color/grey</item>
-        <item name="MyButtonBorder">@color/black</item>
-        <item name="MyButtonPressed">@color/mygreen</item>
-        <item name="MyButtonText">@color/black</item>
-    </style>
-
     <style name="Theme.TrainingAssistant5.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="coloredText">@color/main_orange</item>
         <item name="smallTextColor">@color/white_for_text</item>
@@ -17,7 +6,12 @@
 
         <item name="MyButtonColor">@color/grey</item>
         <item name="MyButtonBorder">@color/black</item>
-        <item name="MyButtonPressed">@color/mygreen</item>
+        <item name="MyButtonPressed">@color/orange_light</item>
         <item name="MyButtonText">@color/black</item>
+        <item name="Marker">@color/black</item>
+
+        <item name="unselectedTabTextColor">@color/colorGray</item>
+        <item name="selectedTabTextColor">@color/white</item>
+        <item name="tabIndicatorCustom">@color/main_orange</item>
     </style>
 </resources>

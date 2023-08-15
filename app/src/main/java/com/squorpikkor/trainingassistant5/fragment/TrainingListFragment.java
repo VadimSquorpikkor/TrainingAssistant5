@@ -34,7 +34,7 @@ public class TrainingListFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
         adapter.setOnItemClickListener(training -> {
-            mViewModel.selectTraining(training);
+            mViewModel.selectExercise(training);
             openExerciseListFragment();
         });
         mViewModel.getSelectedTraining().observe(getViewLifecycleOwner(), adapter::setList);
@@ -43,10 +43,10 @@ public class TrainingListFragment extends Fragment {
     }
 
     private void openExerciseListFragment() {
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, ExerciseListFragment.newInstance())
-                .addToBackStack(null)
-                .commit();
+//        requireActivity().getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container, ExerciseListFragment.newInstance())
+//                .addToBackStack(null)
+//                .commit();
     }
 
 }
