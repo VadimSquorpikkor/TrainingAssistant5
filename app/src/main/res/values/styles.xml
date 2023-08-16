@@ -68,4 +68,11 @@
         <item name="android:paddingEnd">4dp</item>
         <item name="android:textSize">10sp</item>
     </style>
+
+    <style name="NavigationDrawerStyle">
+        <item name="android:textSize">12sp</item>
+        <!-- item size in menu-->
+        <item name="android:listPreferredItemHeightSmall">38dp</item>
+        <item name="listPreferredItemHeightSmall">38dp</item>
+    </style>
 </resources>

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TrainingAssistant5</string>
+    <string name="site_address">VadimSerikov11@gmail.com</string>
+    <string name="app_logo">Application Logo</string>
 </resources>

@@ -15,18 +15,23 @@ import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.ThemeUtils;
 import com.squorpikkor.trainingassistant5.adapter.ExerciseListAdapter;
 
-public class ExerciseListFragment extends Fragment {
+/**Бывший ExerciseListFragment
+ * Фрагмент -- текущая тренировка со списком упражнений
+ * Также отображается инфа выбранной тренировки: дата, сколько рекордов и т.д.
+ *
+ * */
+public class TrainingFragment extends Fragment {
 
     private MainViewModel mViewModel;
 
-    public static ExerciseListFragment newInstance() {
-        return new ExerciseListFragment();
+    public static TrainingFragment newInstance() {
+        return new TrainingFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ThemeUtils.onActivityCreateSetTheme(getActivity());
-        View view = inflater.inflate(R.layout.fragment_exercise_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_training, container, false);
         mViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
         RecyclerView recycler = view.findViewById(R.id.recycler);
@@ -34,10 +39,10 @@ public class ExerciseListFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
         adapter.setOnItemClickListener(exercise -> {
-            mViewModel.selectExercise(exercise);
-            openInfoFragment();
+//            mViewModel.selectExercise(exercise);
+//            openInfoFragment();
         });
-        mViewModel.getSelectedExercise().observe(getViewLifecycleOwner(), adapter::setList);
+        mViewModel.getExercises().observe(getViewLifecycleOwner(), adapter::setList);
 
         return view;
     }

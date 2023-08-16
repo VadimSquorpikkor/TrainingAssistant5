@@ -14,4 +14,8 @@
     <attr name="unselectedTabTextColor" format="color"/>
     <attr name="selectedTabTextColor" format="color"/>
     <attr name="tabIndicatorCustom" format="color"/>
+
+    <attr name="navBarGradient" format="reference"/>
+    <attr name="navMenuBackground" format="reference"/>
+    <attr name="menuTextColor" format="reference"/>
 </resources>

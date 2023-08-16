@@ -15,6 +15,7 @@ import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.ThemeUtils;
 import com.squorpikkor.trainingassistant5.adapter.TrainingListAdapter;
 
+/**Список всех тренировок*/
 public class TrainingListFragment extends Fragment {
 
     private MainViewModel mViewModel;
@@ -34,17 +35,17 @@ public class TrainingListFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
         adapter.setOnItemClickListener(training -> {
-            mViewModel.selectExercise(training);
+            mViewModel.getExercises(training);
             openExerciseListFragment();
         });
-        mViewModel.getSelectedTraining().observe(getViewLifecycleOwner(), adapter::setList);
+        mViewModel.getTrainings().observe(getViewLifecycleOwner(), adapter::setList);
 
         return view;
     }
 
     private void openExerciseListFragment() {
 //        requireActivity().getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, ExerciseListFragment.newInstance())
+//                .replace(R.id.fragment_container, TrainingFragment.newInstance())
 //                .addToBackStack(null)
 //                .commit();
     }
