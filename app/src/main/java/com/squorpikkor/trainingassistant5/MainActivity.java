@@ -1,6 +1,5 @@
 package com.squorpikkor.trainingassistant5;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -9,19 +8,17 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-
+import android.view.View;
+import android.widget.TextView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.squorpikkor.trainingassistant5.dialog.SignInDialog;
 import com.squorpikkor.trainingassistant5.fragment.ExerciseFragment;
 import com.squorpikkor.trainingassistant5.fragment.TrainingFragment;
 import com.squorpikkor.trainingassistant5.fragment.TrainingListFragment;
 
 public class MainActivity extends AppCompatActivity {
-
-//    DrawerLayout drawer_layout;
-//    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +64,21 @@ public class MainActivity extends AppCompatActivity {
             drawer_layout.closeDrawer(GravityCompat.START);
             return true;
         });
+
+
+        View headerView = navigationView.getHeaderView(0);
+//        TextView version = headerView.findViewById(R.id.version);
+//        String appName = getString(R.string.app_name);
+//        version.setText(String.format("%s %s", appName, VERSION_NAME));
+        TextView emailText = headerView.findViewById(R.id.accountEmail);
+//        accountImage = headerView.findViewById(R.id.account_image);
+
+        headerView.findViewById(R.id.accountImage).setOnClickListener(v->
+                SignInDialog.newInstance().show(getSupportFragmentManager(), null));
+
+        mViewModel.getSignedLogin().observe(this, emailText::setText);
     }
+
+
 
 }

@@ -9,6 +9,15 @@
     <attr name="MyButtonPressed" type="color"/>
     <attr name="MyButtonText" type="color"/>
 
+<!--    <attr name="customButtonPressed" format="color"/>-->
+<!--    <attr name="customButtonDisabled" format="color"/>-->
+    <attr name="customButton" format="color"/>
+    <attr name="customButtonTextColor" format="color"/>
+    <attr name="customButtonGradientEndPressed" format="color"/>
+    <attr name="customButtonGradientCenterPressed" format="color"/>
+    <attr name="customButtonGradientDisabledStart" format="color"/>
+    <attr name="customButtonGradientDisabledEnd" format="color"/>
+
     <attr name="Marker" type="color"/>
 
     <attr name="unselectedTabTextColor" format="color"/>
@@ -18,4 +27,6 @@
     <attr name="navBarGradient" format="reference"/>
     <attr name="navMenuBackground" format="reference"/>
     <attr name="menuTextColor" format="reference"/>
+
+    <attr name="dialogBackground" format="color"/>
 </resources>

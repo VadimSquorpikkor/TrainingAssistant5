@@ -2,12 +2,22 @@
     <style name="Theme.TrainingAssistant5.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="coloredText">@color/main_orange</item>
         <item name="smallTextColor">@color/white_for_text</item>
-        <item name="editTextBackgroundColor">@color/grey</item>
+        <item name="editTextBackgroundColor">@color/colorPrimary</item>
 
         <item name="MyButtonColor">@color/grey</item>
         <item name="MyButtonBorder">@color/black</item>
         <item name="MyButtonPressed">@color/orange_light</item>
         <item name="MyButtonText">@color/black</item>
+
+        <item name="customButton">@color/colorPrimary</item>
+<!--        <item name="customButtonPressed">@color/main_orange</item>-->
+        <item name="customButtonTextColor">@color/white_for_text</item>
+<!--        <item name="customButtonDisabled">@color/grey</item>-->
+        <item name="customButtonGradientEndPressed">@color/colorPrimary</item>
+        <item name="customButtonGradientCenterPressed">@color/main_orange</item>
+        <item name="customButtonGradientDisabledStart">@color/colorPrimary</item>
+        <item name="customButtonGradientDisabledEnd">@color/colorGray</item>
+
         <item name="Marker">@color/black</item>
 
         <item name="unselectedTabTextColor">@color/colorGray</item>
@@ -17,5 +27,7 @@
         <item name="navBarGradient">@drawable/side_nav_bar_dark</item>
         <item name="navMenuBackground">@color/colorBackground</item>
         <item name="menuTextColor">@color/white</item>
+
+        <item name="dialogBackground">@color/dark_grey</item>
     </style>
 </resources>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/vertical"
+    android:background="?attr/dialogBackground"
+    android:padding="8dp">
+
+    <TextView android:id="@+id/login_text" style="@style/textH1" android:text="@string/login"/>
+    <TextView android:id="@+id/register_text" style="@style/textH1" android:text="Register"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/editEmail"
+        style="@style/dialogLinearEdit"
+        android:background="@drawable/edit_text_field"
+        tools:text="someemail@gmail.com"
+        android:importantForAutofill="no"
+        android:layout_width="match_parent"
+        tools:ignore="LabelFor" />
+
+    <EditText
+        android:id="@+id/editPass"
+        android:layout_width="match_parent"
+        style="@style/dialogLinearEdit"
+        android:background="@drawable/edit_text_field"
+        tools:text="someemail@gmail.com"
+        android:inputType="textPassword"
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor" />
+
+    <LinearLayout android:id="@+id/set_register_layout" style="@style/horizontalCenter">
+
+        <TextView style="@style/textH3" android:text="Если нет аккаунта"/>
+
+        <TextView android:id="@+id/set_register"
+            style="@style/nice_button"
+            android:text="Register" />
+
+
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/set_sign_in_layout" style="@style/horizontalCenter">
+
+        <TextView style="@style/textH3" android:text="Если есть аккаунт"/>
+
+        <TextView android:id="@+id/set_sign_in"
+            style="@style/nice_button"
+            android:text="SigIn" />
+
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/horizontalCenter">
+
+        <Button
+            android:id="@+id/button_cancel"
+            style="@style/CustomButton"
+            android:layout_margin="3dp"
+            android:background="@drawable/button_shape_selector"
+            android:text="@string/button_negative" />
+
+        <Button
+            android:id="@+id/button_register"
+            style="@style/CustomButton"
+            android:layout_margin="3dp"
+            android:background="@drawable/button_shape_selector"
+            android:text="Зарегистрироваться" />
+
+        <Button
+            android:id="@+id/button_sign_in"
+            style="@style/CustomButton"
+            android:layout_margin="3dp"
+            android:background="@drawable/button_shape_selector"
+            android:text="@string/button_sign_in" />
+
+    </LinearLayout>
+
+</LinearLayout>
