@@ -12,6 +12,7 @@ import com.squorpikkor.trainingassistant5.MainViewModel;
 import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.ThemeUtils;
 
+/**По-сути — EventFragment, т.е. фрагмент с отображением текущей тренировки (не абстрактной) с отображением списка подходов*/
 public class ExerciseFragment extends Fragment {
 
     private MainViewModel mViewModel;

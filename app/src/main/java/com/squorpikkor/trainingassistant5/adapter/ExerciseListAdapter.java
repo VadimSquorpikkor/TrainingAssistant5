@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.Checkable;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,8 +49,8 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     @Override
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         Exercise exercise = list.get(position);
-//        String date = training.getDate();//todo
-//        holder.date.setText(date);
+        holder.name.setText(exercise.getName());
+        holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> exercise.setChecked(b));
     }
 
     @Override
@@ -57,11 +60,15 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
     public class AdapterViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView date;
+        private final TextView name;
+        private final CheckBox checkBox;
 
         public AdapterViewHolder(@NonNull View itemView) {
             super(itemView);
-//            date = itemView.findViewById(R.id.date);//todo
+
+            name = itemView.findViewById(R.id.name);
+            checkBox = itemView.findViewById(R.id.check);
+
             itemView.setOnClickListener(v->{
                 if (listener!=null) listener.onItemClick(list.get(getAdapterPosition()));
             });

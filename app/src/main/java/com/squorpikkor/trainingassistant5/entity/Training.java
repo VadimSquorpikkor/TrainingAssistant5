@@ -2,28 +2,26 @@ package com.squorpikkor.trainingassistant5.entity;
 
 import java.util.Date;
 
+/**Тренировка. Тот список упражнений, который нужно сделать в зале в конкретный день*/
 public class Training {
 //    Training - id, date, userId
 
-    private final String id;
-    private final Date date;
     private final String userId;
+    private String Date;
 
-    public Training(String id, Date date, String userId) {
-        this.id = id;
-        this.date = date;
+    public Training(String userId) {
         this.userId = userId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public Date getDate() {
-        return date;
     }
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getDate() {
+        return Date;
+    }
+
+    public void setDate(String date) {
+        Date = date;
     }
 }

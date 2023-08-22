@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squorpikkor.trainingassistant5.MainViewModel;
 import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.ThemeUtils;
+import com.squorpikkor.trainingassistant5.adapter.EventListAdapter;
 import com.squorpikkor.trainingassistant5.adapter.ExerciseListAdapter;
 
 /**Бывший ExerciseListFragment
@@ -35,14 +36,14 @@ public class TrainingFragment extends Fragment {
         mViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
         RecyclerView recycler = view.findViewById(R.id.recycler);
-        ExerciseListAdapter adapter = new ExerciseListAdapter();
+        EventListAdapter adapter = new EventListAdapter();
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
         adapter.setOnItemClickListener(exercise -> {
 //            mViewModel.selectExercise(exercise);
 //            openInfoFragment();
         });
-        mViewModel.getExercises().observe(getViewLifecycleOwner(), adapter::setList);
+        mViewModel.getEvents().observe(getViewLifecycleOwner(), adapter::setList);
 
         return view;
     }

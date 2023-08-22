@@ -1,15 +1,18 @@
 package com.squorpikkor.trainingassistant5.entity;
 
+import java.util.Date;
+
+/**Как было сделано конкретное упражнение: содержит список подходов (Sets)*/
 public class Event {
 //    Event - id, exerciseId, data
-    private final String id;
+    private String id;
     private final String exerciseId;
-    private final String data;
+    private String trainingId;
+    private String data;
+    private String name;
 
-    public Event(String id, String exerciseId, String data) {
-        this.id = id;
+    public Event(String exerciseId) {
         this.exerciseId = exerciseId;
-        this.data = data;
     }
 
     public String getId() {
@@ -22,5 +25,21 @@ public class Event {
 
     public String getData() {
         return data;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTrainingId() {
+        return trainingId;
+    }
+
+    public void setTrainingId(String trainingId) {
+        this.trainingId = trainingId;
     }
 }

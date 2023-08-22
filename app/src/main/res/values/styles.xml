@@ -84,6 +84,16 @@
         <item name="background">@drawable/button_shape_selector</item>
     </style>
 
+    <style name="FloatRoundButton">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:background">@drawable/round_shape</item>
+        <item name="android:elevation">10dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:src">@drawable/ico_add</item>
+    </style>
+
     <style name="tabText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

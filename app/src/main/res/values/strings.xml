@@ -8,4 +8,5 @@
     <string name="button_positive">ОК</string>
     <string name="button_sign_in">Войти</string>
     <string name="login">Login</string>
+    <string name="button_select">Выбрать</string>
 </resources>

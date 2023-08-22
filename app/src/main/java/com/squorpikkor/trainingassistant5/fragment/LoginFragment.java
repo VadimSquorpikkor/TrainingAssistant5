@@ -12,6 +12,7 @@ import com.squorpikkor.trainingassistant5.MainViewModel;
 import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.ThemeUtils;
 
+// TODO: 21.08.2023 не используется
 public class LoginFragment extends Fragment {
 
     private MainViewModel mViewModel;

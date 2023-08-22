@@ -45,8 +45,8 @@ public class TrainingListAdapter extends RecyclerView.Adapter<TrainingListAdapte
     @Override
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         Training training = list.get(position);
-//        String date = training.getDate();//todo
-//        holder.date.setText(date);
+        String date = training.getDate();
+        holder.date.setText(date);
     }
 
     @Override
@@ -56,11 +56,11 @@ public class TrainingListAdapter extends RecyclerView.Adapter<TrainingListAdapte
 
     public class AdapterViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView date;
+        private final TextView date;
 
         public AdapterViewHolder(@NonNull View itemView) {
             super(itemView);
-//            date = itemView.findViewById(R.id.date);//todo
+            date = itemView.findViewById(R.id.date);
             itemView.setOnClickListener(v->{
                 if (listener!=null) listener.onItemClick(list.get(getAdapterPosition()));
             });

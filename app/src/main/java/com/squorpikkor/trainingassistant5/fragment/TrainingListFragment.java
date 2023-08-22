@@ -1,5 +1,7 @@
 package com.squorpikkor.trainingassistant5.fragment;
 
+import static com.squorpikkor.trainingassistant5.MainViewModel.PAGE_TRAINING;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import com.squorpikkor.trainingassistant5.MainViewModel;
 import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.ThemeUtils;
 import com.squorpikkor.trainingassistant5.adapter.TrainingListAdapter;
+import com.squorpikkor.trainingassistant5.dialog.SelectExerciseForTrainingDialog;
 
 /**Список всех тренировок*/
 public class TrainingListFragment extends Fragment {
@@ -35,19 +38,22 @@ public class TrainingListFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
         adapter.setOnItemClickListener(training -> {
-            mViewModel.getExercises(training);
+            mViewModel.getEvents(training);
             openExerciseListFragment();
         });
         mViewModel.getTrainings().observe(getViewLifecycleOwner(), adapter::setList);
 
+        view.findViewById(R.id.add_training).setOnClickListener(v->addTraining());
+
         return view;
     }
 
+    private void addTraining() {
+        SelectExerciseForTrainingDialog.newInstance().show(getParentFragmentManager(), null);
+    }
+
     private void openExerciseListFragment() {
-//        requireActivity().getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, TrainingFragment.newInstance())
-//                .addToBackStack(null)
-//                .commit();
+        mViewModel.getSelectedPage().postValue(PAGE_TRAINING);
     }
 
 }
