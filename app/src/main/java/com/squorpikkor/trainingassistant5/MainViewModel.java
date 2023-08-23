@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.squorpikkor.trainingassistant5.data.DataBaseHelper;
+import com.squorpikkor.trainingassistant5.data.FirebaseDatabase;
 import com.squorpikkor.trainingassistant5.entity.Event;
 import com.squorpikkor.trainingassistant5.entity.Exercise;
 import com.squorpikkor.trainingassistant5.entity.Training;
@@ -43,7 +43,8 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<Integer> loginState;
 //    private final MutableLiveData<>
 
-    private final DataBaseHelper db;
+    //private final DataBaseHelper db;
+    private final FirebaseDatabase db;
     FireAuth fireAuth;
 
     public MainViewModel() {
@@ -51,7 +52,13 @@ public class MainViewModel extends ViewModel {
         exercises = new MutableLiveData<>(new ArrayList<>());
         events = new MutableLiveData<>(new ArrayList<>());
         sets = new MutableLiveData<>(new ArrayList<>());
-        db = new DataBaseHelper();
+//        db = new DataBaseHelper();
+        db = new FirebaseDatabase();
+//        db = new FirebaseDatabase() {
+//            @Override public void TrainingAddComplete() {
+//
+//            }
+//        };
 
         selectedTraining = new MutableLiveData<>();
         selectedEvent = new MutableLiveData<>();
@@ -69,14 +76,19 @@ public class MainViewModel extends ViewModel {
                 loginState.postValue(REGISTER_SUCCESS);
                 if (FirebaseAuth.getInstance().getCurrentUser()!=null)
                     signedLogin.postValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
             }
             @Override public void onRegisterFailure() {
                 loginState.postValue(REGISTER_FAILURE);
             }
             @Override public void onSignInSuccess() {
                 loginState.postValue(SIGN_IN_SUCCESS);
-                if (FirebaseAuth.getInstance().getCurrentUser()!=null)
-                    signedLogin.postValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                    String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                    signedLogin.postValue(email);
+                    getTrainings(email);
+                }
+
             }
             @Override public void onSignFailure() {
                 loginState.postValue(SIGN_IN_FAILURE);
@@ -122,8 +134,8 @@ public class MainViewModel extends ViewModel {
     }
 
     /**Список всех тренировок пользователя*/
-    public void getTrainings(User user) {
-        db.getTrainingsByUser(user, trainings);
+    public void getTrainings(String login) {
+        db.getTrainingsByUser(login, trainings);
     }
 
     public void getAllExercises() {
@@ -167,6 +179,6 @@ public class MainViewModel extends ViewModel {
         }
         /////db.addEventsList(list, events);
         Training training = new Training(signedLogin.getValue());
-        db.addTraining(training, list);
+        db.addTraining(training, list, events);
     }
 }

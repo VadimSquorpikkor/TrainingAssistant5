@@ -1,6 +1,7 @@
 package com.squorpikkor.trainingassistant5.adapter;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,9 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
     @SuppressLint("NotifyDataSetChanged")
     public void setList(ArrayList<Exercise> list) {
+        for (Exercise e:list) {
+            Log.e("", "list - "+e.getName());
+        }
         if (list==null) this.list = new ArrayList<>();
         this.list = list;
         notifyDataSetChanged();
@@ -50,6 +54,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         Exercise exercise = list.get(position);
         holder.name.setText(exercise.getName());
+        Log.e("", "holder - "+exercise.getName());
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> exercise.setChecked(b));
     }
 

@@ -17,7 +17,7 @@ interface Data {
     void connect(String user);
 
     /**Все тренировки пользователя*/
-    void getTrainingsByUser(User user, MutableLiveData<ArrayList<Training>> trainings);
+    void getTrainingsByUser(String login, MutableLiveData<ArrayList<Training>> trainings);
 
     void getExerciseByUser(String login, MutableLiveData<ArrayList<Exercise>> exercises);
 
@@ -29,11 +29,11 @@ interface Data {
     void addEventsList(ArrayList<Event> list, MutableLiveData<ArrayList<Event>> events);
 
 
-    void addTraining(Training training, ArrayList<Event> list);
+    void addTraining(Training training, ArrayList<Event> list, MutableLiveData<ArrayList<Event>> events);
 
     void addExercise(Exercise exercise);
 
-    void addEvent(Event event);
+    void addEvent(Event event, String login);
 
     void addSet(WorkoutSet workoutSet);
 

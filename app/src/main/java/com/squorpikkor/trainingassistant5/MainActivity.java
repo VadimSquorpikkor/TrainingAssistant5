@@ -73,11 +73,14 @@ public class MainActivity extends AppCompatActivity {
         TextView emailText = headerView.findViewById(R.id.accountEmail);
 //        accountImage = headerView.findViewById(R.id.account_image);
 
-        headerView.findViewById(R.id.accountImage).setOnClickListener(v->
-                SignInDialog.newInstance().show(getSupportFragmentManager(), null));
+        headerView.findViewById(R.id.accountImage).setOnClickListener(v-> {
+            SignInDialog.newInstance().show(getSupportFragmentManager(), null);
+            drawer_layout.closeDrawer(GravityCompat.START);
+        });
 
         mViewModel.getSignedLogin().observe(this, emailText::setText);
     }
+
 
 
 

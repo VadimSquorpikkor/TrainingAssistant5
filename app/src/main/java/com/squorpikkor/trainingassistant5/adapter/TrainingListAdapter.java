@@ -45,7 +45,7 @@ public class TrainingListAdapter extends RecyclerView.Adapter<TrainingListAdapte
     @Override
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         Training training = list.get(position);
-        String date = training.getDate();
+        String date = training.getDate().toString();
         holder.date.setText(date);
     }
 

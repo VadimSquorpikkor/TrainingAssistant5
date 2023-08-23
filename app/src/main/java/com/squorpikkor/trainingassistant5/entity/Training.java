@@ -6,8 +6,9 @@ import java.util.Date;
 public class Training {
 //    Training - id, date, userId
 
+    private String id;
     private final String userId;
-    private String Date;
+    private Date Date;
 
     public Training(String userId) {
         this.userId = userId;
@@ -15,13 +16,21 @@ public class Training {
 
     public String getUserId() {
         return userId;
-    }
+    }// TODO: 23.08.2023 нахер нужно
 
-    public String getDate() {
+    public Date getDate() {
         return Date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         Date = date;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

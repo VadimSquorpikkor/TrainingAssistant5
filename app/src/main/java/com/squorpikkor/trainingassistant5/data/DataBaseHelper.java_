@@ -119,7 +119,7 @@ public class DataBaseHelper  implements Data{
     }
 
     @Override
-    public void addEvent(Event event) {
+    public void addEvent(Event event, String login) {
 
     }
 
