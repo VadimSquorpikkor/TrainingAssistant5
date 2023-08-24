@@ -8,7 +8,7 @@ public class Training {
 
     private String id;
     private final String userId;
-    private Date Date;
+    private String date;
 
     public Training(String userId) {
         this.userId = userId;
@@ -18,12 +18,12 @@ public class Training {
         return userId;
     }// TODO: 23.08.2023 нахер нужно
 
-    public Date getDate() {
-        return Date;
+    public String getDate() {
+        return date;
     }
 
-    public void setDate(Date date) {
-        Date = date;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getId() {

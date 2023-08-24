@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,16 +11,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.entity.Event;
-import com.squorpikkor.trainingassistant5.entity.Exercise;
+import com.squorpikkor.trainingassistant5.entity.WorkoutSet;
 
 import java.util.ArrayList;
 
-public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.AdapterViewHolder> {
+public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.AdapterViewHolder> {
 
-    private ArrayList<Event> list;
+    private ArrayList<WorkoutSet> list;
 
     public interface OnItemClickListener {
-        void onItemClick(Event event);
+        void onItemClick(WorkoutSet workoutSet);
     }
 
     private OnItemClickListener listener;
@@ -31,7 +30,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Adap
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setList(ArrayList<Event> list) {
+    public void setList(ArrayList<WorkoutSet> list) {
         if (list==null) this.list = new ArrayList<>();
         this.list = list;
         notifyDataSetChanged();
@@ -40,14 +39,14 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Adap
     @NonNull
     @Override
     public AdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_workout, parent, false);
         return new AdapterViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
-        Event event = list.get(position);
-        holder.name.setText(event.getExerciseId());
+        WorkoutSet set = list.get(position);
+        holder.name.setText(position);
     }
 
     @Override

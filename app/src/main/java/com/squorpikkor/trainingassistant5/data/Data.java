@@ -2,6 +2,7 @@ package com.squorpikkor.trainingassistant5.data;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.squorpikkor.trainingassistant5.entity.Event;
 import com.squorpikkor.trainingassistant5.entity.Exercise;
 import com.squorpikkor.trainingassistant5.entity.WorkoutSet;
@@ -21,15 +22,17 @@ interface Data {
 
     void getExerciseByUser(String login, MutableLiveData<ArrayList<Exercise>> exercises);
 
-    void getEventByTraining(Training training, MutableLiveData<ArrayList<Event>> events);
+    void getEventByTraining(String login, Training training, MutableLiveData<ArrayList<Event>> events);
 
-    void getSetsByEvent(Event event, MutableLiveData<ArrayList<WorkoutSet>> sets);
+    void getSetsByEvent(String login, Event event, MutableLiveData<ArrayList<WorkoutSet>> sets);
 
 
     void addEventsList(ArrayList<Event> list, MutableLiveData<ArrayList<Event>> events);
 
 
-    void addTraining(Training training, ArrayList<Event> list, MutableLiveData<ArrayList<Event>> events);
+    void addTraining(Training training, OnSuccessListener<Void> listener);
+
+    void addTraining_old(Training training, ArrayList<Event> list, MutableLiveData<ArrayList<Event>> events);
 
     void addExercise(Exercise exercise);
 

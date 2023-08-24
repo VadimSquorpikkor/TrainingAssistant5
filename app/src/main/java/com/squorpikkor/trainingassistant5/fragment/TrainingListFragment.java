@@ -1,7 +1,5 @@
 package com.squorpikkor.trainingassistant5.fragment;
 
-import static com.squorpikkor.trainingassistant5.MainViewModel.PAGE_TRAINING;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +21,6 @@ public class TrainingListFragment extends Fragment {
 
     private MainViewModel mViewModel;
 
-    public static TrainingListFragment newInstance() {
-        return new TrainingListFragment();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ThemeUtils.onActivityCreateSetTheme(getActivity());
@@ -37,10 +31,7 @@ public class TrainingListFragment extends Fragment {
         TrainingListAdapter adapter = new TrainingListAdapter();
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
-        adapter.setOnItemClickListener(training -> {
-            mViewModel.getEvents(training);
-            openExerciseListFragment();
-        });
+        adapter.setOnItemClickListener(training -> mViewModel.loadEvents(training));
         mViewModel.getTrainings().observe(getViewLifecycleOwner(), adapter::setList);
 
         view.findViewById(R.id.add_training).setOnClickListener(v->addTraining());
@@ -50,10 +41,6 @@ public class TrainingListFragment extends Fragment {
 
     private void addTraining() {
         SelectExerciseForTrainingDialog.newInstance().show(getParentFragmentManager(), null);
-    }
-
-    private void openExerciseListFragment() {
-        mViewModel.getSelectedPage().postValue(PAGE_TRAINING);
     }
 
 }

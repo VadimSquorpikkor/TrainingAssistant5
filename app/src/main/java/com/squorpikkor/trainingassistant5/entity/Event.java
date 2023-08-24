@@ -19,6 +19,10 @@ public class Event {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getExerciseId() {
         return exerciseId;
     }

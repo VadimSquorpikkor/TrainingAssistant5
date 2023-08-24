@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -51,6 +52,8 @@ import java.util.Objects;
  * */
 public class FirebaseDatabase implements Data{
 
+    private final OnFailureListener onFailureListener = e -> Log.e(TAG, "Что-то пошло не так");
+
     private static final String TABLE_EXERCISES = "exercises";
     private static final String EXERCISE_NAME = "name";
     private static final String EXERCISE_BEST_ID = "best";
@@ -72,6 +75,8 @@ public class FirebaseDatabase implements Data{
     public static final String USER_NAME = "name";
 
     public static final String TAG = "fireBase";
+    private static final String WORKOUT_DATA = "data";
+    private static final String TABLE_WORKOUT = "workouts";
 
     private final FirebaseFirestore db;
 
@@ -120,7 +125,7 @@ public class FirebaseDatabase implements Data{
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Log.e(TAG, "try");
                             String id = document.getId();// String.valueOf(doc.get(EXERCISE_ID));
-                            Date date = (Date)document.get(TRAINING_DATE);
+                            String date = String.valueOf(document.get(TRAINING_DATE));
                             Training training = new Training(login);
                             training.setId(id);
                             training.setDate(date);
@@ -161,22 +166,66 @@ public class FirebaseDatabase implements Data{
     }
 
     @Override
-    public void getEventByTraining(Training training, MutableLiveData<ArrayList<Event>> events) {
-
+    public void getEventByTraining(String login, Training training, MutableLiveData<ArrayList<Event>> events) {
+        db.collection(TABLE_USER).document(login)
+                .collection(TABLE_TRAINING).document(training.getId())
+                .collection(TABLE_EVENT)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult()==null) return;
+                        ArrayList<Event> list = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String id = document.getId();// String.valueOf(doc.get(EXERCISE_ID));
+                            String ex_id = String.valueOf(document.get(EVENT_EX_ID));
+                            Event event = new Event(ex_id);
+                            event.setId(id);
+                            event.setTrainingId(training.getId());
+                            list.add(event);
+                        }
+                        events.setValue(list);
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
     }
 
     @Override
-    public void getSetsByEvent(Event event, MutableLiveData<ArrayList<WorkoutSet>> sets) {
-
+    public void getSetsByEvent(String login, Event event, MutableLiveData<ArrayList<WorkoutSet>> sets) {
+        db.collection(TABLE_USER).document(login)
+                .collection(TABLE_TRAINING).document(event.getTrainingId())
+                .collection(TABLE_EVENT).document(event.getId())
+                .collection(TABLE_WORKOUT)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult()==null) return;
+                        ArrayList<WorkoutSet> list = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String data = String.valueOf(document.get(WORKOUT_DATA));
+                            WorkoutSet workoutSet = new WorkoutSet(data);
+                            list.add(workoutSet);
+                        }
+                        sets.setValue(list);
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
     }
 
     @Override
     public void addEventsList(ArrayList<Event> list, MutableLiveData<ArrayList<Event>> events) {
-
+//        for (Event event : list) {
+//            event.setTrainingId(trId);
+//            addEvent(event, training.getUserId());
+//        }
+//        addNewEventListener(training.getUserId(), trId, events);
     }
 
+
+
     @Override
-    public void addTraining(Training training, ArrayList<Event> list, MutableLiveData<ArrayList<Event>> events) {
+    public void addTraining(Training training, OnSuccessListener<Void> listener) {
         Date trDate = new Date();
         String trId = String.valueOf(trDate.getTime());
 
@@ -186,14 +235,30 @@ public class FirebaseDatabase implements Data{
         db.collection(TABLE_USER).document(training.getUserId()).collection(TABLE_TRAINING)
                 .document(trId)
                 .set(data)
+                .addOnSuccessListener(listener)
+                .addOnFailureListener(onFailureListener);//todo toast
+    }
+
+    @Override
+    public void addTraining_old(Training training, ArrayList<Event> list, MutableLiveData<ArrayList<Event>> events) {
+        Date trDate = new Date();
+        String trId = String.valueOf(trDate.getTime());
+        training.setId(trId);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put(TRAINING_DATE, trId);
+
+        db.collection(TABLE_USER).document(training.getUserId()).collection(TABLE_TRAINING)
+                .document(trId)
+                .set(data)
                 .addOnSuccessListener(aVoid -> {
 
                     Log.e(TAG, "DocumentSnapshot successfully written!");
-                    for (Event event:list) {
+                    for (Event event : list) {
                         event.setTrainingId(trId);
-                        addEvent(event, training.getUserId());
+                        FirebaseDatabase.this.addEvent(event, training.getUserId());
                     }
-                    addNewEventListener(training.getUserId(), trId, events);
+                    FirebaseDatabase.this.addNewEventListener(training.getUserId(), training, events);
 
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Error writing document", e));//todo toast
@@ -263,12 +328,12 @@ public class FirebaseDatabase implements Data{
     }
 
     /**Слушатель для новых событий*/
-    void addNewEventListener(String login, String trainingId, MutableLiveData<ArrayList<Event>> events) {
+    void addNewEventListener(String login, Training training, MutableLiveData<ArrayList<Event>> events) {
         db.collection(TABLE_USER).document(login)
-                .collection(TABLE_TRAINING).document(trainingId)
+                .collection(TABLE_TRAINING).document(training.getId())
                 .collection(TABLE_EVENT).addSnapshotListener((queryDocumentSnapshots, error) -> {
                     Log.e(TAG, "listen ev");
-                    //getEventByTraining(trainingId, events);
+                    getEventByTraining(training.getUserId(), training, events);
 
                 });
     }

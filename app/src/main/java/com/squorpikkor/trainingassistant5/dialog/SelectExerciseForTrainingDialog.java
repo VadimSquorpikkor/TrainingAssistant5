@@ -23,7 +23,7 @@ public class SelectExerciseForTrainingDialog extends BaseDialog {
       super.onCreateDialog(savedInstanceState);
       initializeWithVM(R.layout.dialog_select_exercise);
 
-      mViewModel.getAllExercises();
+      mViewModel.loadExercises();
 
       RecyclerView recyclerView = view.findViewById(R.id.recycler);
       ExerciseListAdapter adapter = new ExerciseListAdapter();
