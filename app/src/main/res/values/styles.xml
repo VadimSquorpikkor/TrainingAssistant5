@@ -52,6 +52,10 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">20sp</item>
     </style>
+    <style name="textH2" parent="ordinaryText">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">16sp</item>
+    </style>
     <style name="textH3" parent="ordinaryText">
         <item name="android:textSize">12sp</item>
     </style>

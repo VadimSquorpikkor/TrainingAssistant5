@@ -15,7 +15,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.squorpikkor.trainingassistant5.dialog.SignInDialog;
 import com.squorpikkor.trainingassistant5.fragment.ExerciseFragment;
-import com.squorpikkor.trainingassistant5.fragment.TrainingFragment;
+import com.squorpikkor.trainingassistant5.fragment.EventListFragment;
 import com.squorpikkor.trainingassistant5.fragment.TrainingListFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         PagerAdapter sectionsPagerAdapter = new PagerAdapter(getSupportFragmentManager(), getLifecycle());
         sectionsPagerAdapter.addFragment(new TrainingListFragment());
-        sectionsPagerAdapter.addFragment(new TrainingFragment());
+        sectionsPagerAdapter.addFragment(new EventListFragment());
         sectionsPagerAdapter.addFragment(new ExerciseFragment());
 
         ViewPager2 viewPager = findViewById(R.id.view_pager);

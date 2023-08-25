@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout style="@style/vertical"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="exerciseList"/>
+
+    <TextView
+        style="@style/textH1"
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="13.02.23"/>
+
+    <TextView
+        android:id="@+id/eff"
+        style="@style/textH2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="13.02.23"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"

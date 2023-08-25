@@ -27,7 +27,7 @@ public class MainViewModel extends ViewModel {
 
     // TODO: 24.08.2023 мютабл не нужен. Простые классы. или вообще удалить
     //Entities
-//    private final MutableLiveData<Training> selectedTraining;
+    private final MutableLiveData<Training> selectedTraining;
     private final MutableLiveData<Event> selectedEvent;
 //    private final MutableLiveData<WorkoutSet> selectedSet;
 
@@ -56,7 +56,7 @@ public class MainViewModel extends ViewModel {
         sets = new MutableLiveData<>(new ArrayList<>());
         db = new FirebaseDatabase();
 
-//        selectedTraining = new MutableLiveData<>();
+        selectedTraining = new MutableLiveData<>();
         selectedEvent = new MutableLiveData<>();
 //        selectedSet = new MutableLiveData<>();
 
@@ -142,6 +142,10 @@ public class MainViewModel extends ViewModel {
         return loginState;
     }
 
+
+    public MutableLiveData<Training> getSelectedTraining() {
+        return selectedTraining;
+    }
     public MutableLiveData<Event> getSelectedEvent() {
         return selectedEvent;
     }
@@ -165,9 +169,9 @@ public class MainViewModel extends ViewModel {
     }
 
     public void loadEvents(Training training) {
-        selectedPage.postValue(PAGE_TRAINING);
+
         selectedTrainingId = training.getId();
-        //selectedTraining.postValue(training);
+        selectedTraining.postValue(training);
         db.getEventByTraining(signedLogin.getValue(), training.getId(), events);
     }
 
@@ -178,7 +182,7 @@ public class MainViewModel extends ViewModel {
     public void loadWorkoutSets(Event event) {
         selectedEventId = event.getId();
         selectedEvent.postValue(event);
-        selectedPage.postValue(PAGE_EXERCISE);
+
         db.getSetsByEvent(signedLogin.getValue(), event, sets);
     }
 

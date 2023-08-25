@@ -1,5 +1,7 @@
 package com.squorpikkor.trainingassistant5.fragment;
 
+import static com.squorpikkor.trainingassistant5.MainViewModel.PAGE_TRAINING;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +33,14 @@ public class TrainingListFragment extends Fragment {
         TrainingListAdapter adapter = new TrainingListAdapter();
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
-        adapter.setOnItemClickListener(training -> mViewModel.loadEvents(training));
-        mViewModel.getTrainings().observe(getViewLifecycleOwner(), adapter::setList);
+        adapter.setOnItemClickListener(training -> {
+            mViewModel.loadEvents(training);
+            mViewModel.getSelectedPage().postValue(PAGE_TRAINING);
+        });
+        mViewModel.getTrainings().observe(getViewLifecycleOwner(), list -> {
+            adapter.setList(list);
+            if (list!=null && list.size()!=0) mViewModel.loadEvents(list.get(list.size()-1));
+        });
 
         view.findViewById(R.id.add_training).setOnClickListener(v->addTraining());
 

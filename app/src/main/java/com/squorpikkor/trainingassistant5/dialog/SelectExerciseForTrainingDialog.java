@@ -32,7 +32,10 @@ public class SelectExerciseForTrainingDialog extends BaseDialog {
       mViewModel.getExercises().observe(requireActivity(), adapter::setList);
 
       view.findViewById(R.id.button_cancel).setOnClickListener(v->dismiss());
-      view.findViewById(R.id.button_select).setOnClickListener(v->mViewModel.selectChecked());
+      view.findViewById(R.id.button_select).setOnClickListener(v-> {
+         mViewModel.selectChecked();
+         dismiss();
+      });
 
       return dialog;
    }
