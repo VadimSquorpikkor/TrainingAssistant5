@@ -22,7 +22,7 @@ interface Data {
 
     void getExerciseByUser(String login, MutableLiveData<ArrayList<Exercise>> exercises);
 
-    void getEventByTraining(String login, Training training, MutableLiveData<ArrayList<Event>> events);
+    void getEventByTraining(String login, String trainingId, MutableLiveData<ArrayList<Event>> events);
 
     void getSetsByEvent(String login, Event event, MutableLiveData<ArrayList<WorkoutSet>> sets);
 
@@ -38,7 +38,7 @@ interface Data {
 
     void addEvent(Event event, String login);
 
-    void addSet(WorkoutSet workoutSet);
+    void addSet(String login, String trId, String evId, WorkoutSet workoutSet, FirebaseDatabase.OnSuccess onSuccess);
 
     /**При старте дать БД мутабл, в который будут отправляться сообщения*/
     void setMutableForMessage(MutableLiveData<String> messages);// TODO: 15.08.2023 или сделать листом

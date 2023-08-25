@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,11 +16,15 @@ import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.ThemeUtils;
 import com.squorpikkor.trainingassistant5.adapter.EventListAdapter;
 import com.squorpikkor.trainingassistant5.adapter.WorkoutListAdapter;
+import com.squorpikkor.trainingassistant5.entity.Event;
+import com.squorpikkor.trainingassistant5.entity.WorkoutSet;
 
 /**По-сути — EventFragment, т.е. фрагмент с отображением текущей тренировки (не абстрактной) с отображением списка подходов*/
 public class ExerciseFragment extends Fragment {
 
     private MainViewModel mViewModel;
+
+    private String eventId;
 
     public static ExerciseFragment newInstance() {
         return new ExerciseFragment();
@@ -35,13 +40,22 @@ public class ExerciseFragment extends Fragment {
         WorkoutListAdapter adapter = new WorkoutListAdapter();
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
-        adapter.setOnItemClickListener(exercise -> {
+        adapter.setOnItemClickListener(workout -> {
 //            mViewModel.selectExercise(exercise);
 //            openInfoFragment();
         });
         mViewModel.getWorkoutSets().observe(getViewLifecycleOwner(), adapter::setList);
+        mViewModel.getSelectedEvent().observe(getViewLifecycleOwner(), this::updateFragment);
+
+        view.findViewById(R.id.add_set).setOnClickListener(view1 -> {
+            mViewModel.addWorkout(new WorkoutSet("60x12"));// TODO: 25.08.2023 диалог
+        });
 
         return view;
+    }
+
+    public void updateFragment(Event event) {
+        eventId = event.getId();// TODO: 25.08.2023 вряд ли здесь
     }
 
 }

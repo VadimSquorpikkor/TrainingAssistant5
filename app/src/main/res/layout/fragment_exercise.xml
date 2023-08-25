@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <ImageView
-        android:id="@+id/add_training"
+        android:id="@+id/add_set"
         style="@style/FloatRoundButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

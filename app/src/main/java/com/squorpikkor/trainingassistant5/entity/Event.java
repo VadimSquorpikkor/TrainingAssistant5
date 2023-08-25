@@ -6,8 +6,11 @@ import java.util.Date;
 public class Event {
 //    Event - id, exerciseId, data
     private String id;
-    private final String exerciseId;
+    private String exerciseId;
+
     private String trainingId;
+    private String login;
+
     private String data;
     private String name;
 

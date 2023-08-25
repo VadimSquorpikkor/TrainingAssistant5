@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squorpikkor.trainingassistant5.data.FirebaseDatabase;
+import com.squorpikkor.trainingassistant5.entity.Entity;
 import com.squorpikkor.trainingassistant5.entity.Event;
 import com.squorpikkor.trainingassistant5.entity.Exercise;
 import com.squorpikkor.trainingassistant5.entity.Training;
@@ -26,9 +27,9 @@ public class MainViewModel extends ViewModel {
 
     // TODO: 24.08.2023 мютабл не нужен. Простые классы. или вообще удалить
     //Entities
-    private final MutableLiveData<Training> selectedTraining;
+//    private final MutableLiveData<Training> selectedTraining;
     private final MutableLiveData<Event> selectedEvent;
-    private final MutableLiveData<WorkoutSet> selectedSet;
+//    private final MutableLiveData<WorkoutSet> selectedSet;
 
     private final MutableLiveData<Integer> selectedPage;
 
@@ -46,6 +47,8 @@ public class MainViewModel extends ViewModel {
     private final FirebaseDatabase db;
     FireAuth fireAuth;
 
+    Entity entity;
+
     public MainViewModel() {
         trainings = new MutableLiveData<>(new ArrayList<>());
         exercises = new MutableLiveData<>(new ArrayList<>());
@@ -53,9 +56,9 @@ public class MainViewModel extends ViewModel {
         sets = new MutableLiveData<>(new ArrayList<>());
         db = new FirebaseDatabase();
 
-        selectedTraining = new MutableLiveData<>();
+//        selectedTraining = new MutableLiveData<>();
         selectedEvent = new MutableLiveData<>();
-        selectedSet = new MutableLiveData<>();
+//        selectedSet = new MutableLiveData<>();
 
         selectedPage = new MutableLiveData<>(PAGE_ALL_TRAININGS);
         login = new MutableLiveData<>("VadimSerikov11@gmail.com");// TODO: 17.08.2023 загружать из pref, по умолчанию будет ""
@@ -93,7 +96,16 @@ public class MainViewModel extends ViewModel {
 
             }
         };
+
+        entity = new Entity();
     }
+
+    private String selectedLogin;
+    private String selectedTrainingId;
+    private String selectedEventId;
+
+    //Event selectedEvent;
+
 
     String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getEmail();// TODO: 22.08.2023
@@ -130,9 +142,22 @@ public class MainViewModel extends ViewModel {
         return loginState;
     }
 
+    public MutableLiveData<Event> getSelectedEvent() {
+        return selectedEvent;
+    }
+
     /**Список всех тренировок пользователя*/
     public void loadTrainings(String login) {
+        selectedLogin = login;
         db.getTrainingsByUser(login, trainings);
+    }
+
+    public void loadTrainings2(String login) {
+        db.getTrainings(login, trainings::setValue);
+    }
+
+    public void addEventNew(Event event, String trId) {
+        db.addEventNew(event, signedLogin.getValue(), () -> db.getEventByTraining(signedLogin.getValue(), trId, events));// TODO: 25.08.2023 ну так.... получилось... абы чо
     }
 
     public void loadExercises() {
@@ -141,11 +166,18 @@ public class MainViewModel extends ViewModel {
 
     public void loadEvents(Training training) {
         selectedPage.postValue(PAGE_TRAINING);
-        selectedTraining.postValue(training);
-        db.getEventByTraining(signedLogin.getValue(), training, events);
+        selectedTrainingId = training.getId();
+        //selectedTraining.postValue(training);
+        db.getEventByTraining(signedLogin.getValue(), training.getId(), events);
+    }
+
+    public void addWorkout(WorkoutSet set) {
+        db.addSet(selectedLogin, selectedTrainingId, selectedEventId, set, () -> loadWorkoutSets(selectedEvent.getValue()));
     }
 
     public void loadWorkoutSets(Event event) {
+        selectedEventId = event.getId();
+        selectedEvent.postValue(event);
         selectedPage.postValue(PAGE_EXERCISE);
         db.getSetsByEvent(signedLogin.getValue(), event, sets);
     }

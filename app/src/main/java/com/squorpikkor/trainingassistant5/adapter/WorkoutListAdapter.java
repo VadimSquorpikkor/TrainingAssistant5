@@ -19,6 +19,8 @@ public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.
 
     private ArrayList<WorkoutSet> list;
 
+
+
     public interface OnItemClickListener {
         void onItemClick(WorkoutSet workoutSet);
     }
@@ -46,7 +48,7 @@ public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.
     @Override
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         WorkoutSet set = list.get(position);
-        holder.name.setText(position);
+        holder.name.setText(set.getData());
     }
 
     @Override
