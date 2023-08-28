@@ -4,9 +4,8 @@ package com.squorpikkor.trainingassistant5.entity;
 import com.squorpikkor.trainingassistant5.Utils;
 
 /**Тренировка. Тот список упражнений, который нужно сделать в зале в конкретный день*/
-public class Training {
+public class Training extends BaseEntity {
 
-    private String id;
     private float weight;
     private String effectivity;
     private String date;
@@ -50,11 +49,4 @@ public class Training {
         this.date = date;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }

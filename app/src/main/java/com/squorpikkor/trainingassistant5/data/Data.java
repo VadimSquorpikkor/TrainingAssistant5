@@ -38,7 +38,7 @@ interface Data {
 
     void addEvent(Event event, String login);
 
-    void addSet(String login, String trId, String evId, WorkoutSet workoutSet, FirebaseDatabase.OnSuccess onSuccess);
+    void addSet(String login, String trId, String evId, WorkoutSet workoutSet);
 
     /**При старте дать БД мутабл, в который будут отправляться сообщения*/
     void setMutableForMessage(MutableLiveData<String> messages);// TODO: 15.08.2023 или сделать листом

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squorpikkor.trainingassistant5.data.FirebaseDatabase;
+import com.squorpikkor.trainingassistant5.entity.BaseEntity;
 import com.squorpikkor.trainingassistant5.entity.Entity;
 import com.squorpikkor.trainingassistant5.entity.Event;
 import com.squorpikkor.trainingassistant5.entity.Exercise;
@@ -54,7 +55,20 @@ public class MainViewModel extends ViewModel {
         exercises = new MutableLiveData<>(new ArrayList<>());
         events = new MutableLiveData<>(new ArrayList<>());
         sets = new MutableLiveData<>(new ArrayList<>());
-        db = new FirebaseDatabase();
+        db = new FirebaseDatabase() {
+            @Override public void onGetTrainings(ArrayList<Training> list) {
+
+            }
+            @Override public void onGetExercises(ArrayList<Exercise> list) {
+
+            }
+            @Override public void onGetEvents(ArrayList<Event> list) {
+
+            }
+            @Override public void onGetWorkouts(ArrayList<WorkoutSet> list) {
+
+            }
+        };
 
         selectedTraining = new MutableLiveData<>();
         selectedEvent = new MutableLiveData<>();
@@ -153,37 +167,27 @@ public class MainViewModel extends ViewModel {
     /**Список всех тренировок пользователя*/
     public void loadTrainings(String login) {
         selectedLogin = login;
-        db.getTrainingsByUser(login, trainings);
-    }
-
-    public void loadTrainings2(String login) {
-        db.getTrainings(login, trainings::setValue);
-    }
-
-    public void addEventNew(Event event, String trId) {
-        db.addEventNew(event, signedLogin.getValue(), () -> db.getEventByTraining(signedLogin.getValue(), trId, events));// TODO: 25.08.2023 ну так.... получилось... абы чо
+        db.getTrainings(login);
     }
 
     public void loadExercises() {
-        db.getExerciseByUser(signedLogin.getValue(), exercises);
+        db.getExercises(signedLogin.getValue());
     }
 
     public void loadEvents(Training training) {
-
         selectedTrainingId = training.getId();
         selectedTraining.postValue(training);
-        db.getEventByTraining(signedLogin.getValue(), training.getId(), events);
+        db.getEvents(signedLogin.getValue(), training.getId());
     }
 
     public void addWorkout(WorkoutSet set) {
-        db.addSet(selectedLogin, selectedTrainingId, selectedEventId, set, () -> loadWorkoutSets(selectedEvent.getValue()));
+        db.addWorkout(set, selectedLogin, selectedTrainingId, selectedEventId);
     }
 
     public void loadWorkoutSets(Event event) {
         selectedEventId = event.getId();
         selectedEvent.postValue(event);
-
-        db.getSetsByEvent(signedLogin.getValue(), event, sets);
+        db.getWorkouts(signedLogin.getValue(), selectedTrainingId, selectedEventId);
     }
 
     /*public void getCurrentExercise(Event event) {
@@ -213,9 +217,7 @@ public class MainViewModel extends ViewModel {
             if (ex.isChecked()) list.add(new Event(ex.getId()));
         }
         Training training = new Training(signedLogin.getValue());
-//        db.addTraining(training, unused -> {
-//        });
-        db.addTraining_old(training, list, events);
+        db.addTraining(training, list, signedLogin.getValue());
     }
 
     public void getUncheckedEvent() {
