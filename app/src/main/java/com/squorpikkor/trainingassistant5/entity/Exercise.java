@@ -8,39 +8,42 @@ package com.squorpikkor.trainingassistant5.entity;
  * номеров списков (каждый список — степень 2): 1 — это первый, 2 — второй, 4 — третий,
  * 6 — третий и второй, 7 — 1-й, 2-й и 3-й и т.д.
  * */
-public class Exercise {
+public class Exercise extends BaseEntity {
 //    Exercise - id, trainingId, name, bestEventId, lastEventId
 
-    private final String id;
-    private final String name;
-    private final String bestEventId;
-    private final String lastEventId;
+    private String name;
+    private String bestEventId;
+    private String lastEventId;
 
     private boolean isChecked;
     private int predefinedTo;
 
-    public Exercise(String id, String name, String bestEventId, String lastEventId, int predefined) {
-        this.id = id;
+    public Exercise(String name) {
         this.name = name;
-        this.bestEventId = bestEventId;
-        this.lastEventId = lastEventId;
-        this.predefinedTo = predefined;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getBestEventId() {
         return bestEventId;
     }
 
+    public void setBestEventId(String bestEventId) {
+        this.bestEventId = bestEventId;
+    }
+
     public String getLastEventId() {
         return lastEventId;
+    }
+
+    public void setLastEventId(String lastEventId) {
+        this.lastEventId = lastEventId;
     }
 
     public boolean isChecked() {
@@ -58,5 +61,4 @@ public class Exercise {
     public void setPredefinedTo(int predefinedTo) {
         this.predefinedTo = predefinedTo;
     }
-
 }

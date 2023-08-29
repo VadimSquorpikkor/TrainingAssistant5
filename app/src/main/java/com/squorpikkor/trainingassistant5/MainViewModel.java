@@ -30,7 +30,6 @@ public class MainViewModel extends ViewModel {
     //Entities
     private final MutableLiveData<Training> selectedTraining;
     private final MutableLiveData<Event> selectedEvent;
-//    private final MutableLiveData<WorkoutSet> selectedSet;
 
     private final MutableLiveData<Integer> selectedPage;
 
@@ -57,22 +56,21 @@ public class MainViewModel extends ViewModel {
         sets = new MutableLiveData<>(new ArrayList<>());
         db = new FirebaseDatabase() {
             @Override public void onGetTrainings(ArrayList<Training> list) {
-
+                trainings.postValue(list);
             }
             @Override public void onGetExercises(ArrayList<Exercise> list) {
-
+                exercises.postValue(list);
             }
             @Override public void onGetEvents(ArrayList<Event> list) {
-
+                events.postValue(list);
             }
             @Override public void onGetWorkouts(ArrayList<WorkoutSet> list) {
-
+                sets.postValue(list);
             }
         };
 
         selectedTraining = new MutableLiveData<>();
         selectedEvent = new MutableLiveData<>();
-//        selectedSet = new MutableLiveData<>();
 
         selectedPage = new MutableLiveData<>(PAGE_ALL_TRAININGS);
         login = new MutableLiveData<>("VadimSerikov11@gmail.com");// TODO: 17.08.2023 загружать из pref, по умолчанию будет ""
@@ -95,8 +93,8 @@ public class MainViewModel extends ViewModel {
                 loginState.postValue(SIGN_IN_SUCCESS);
                 if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
                     String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                    signedLogin.postValue(email);
-                    loadTrainings(email);
+                    signedLogin.setValue(email);
+                    loadTrainings();
                 }
 
             }
@@ -113,13 +111,6 @@ public class MainViewModel extends ViewModel {
 
         entity = new Entity();
     }
-
-    private String selectedLogin;
-    private String selectedTrainingId;
-    private String selectedEventId;
-
-    //Event selectedEvent;
-
 
     String getUserId() {
         return FirebaseAuth.getInstance().getCurrentUser().getEmail();// TODO: 22.08.2023
@@ -165,9 +156,8 @@ public class MainViewModel extends ViewModel {
     }
 
     /**Список всех тренировок пользователя*/
-    public void loadTrainings(String login) {
-        selectedLogin = login;
-        db.getTrainings(login);
+    public void loadTrainings() {
+        db.getTrainings(signedLogin.getValue());
     }
 
     public void loadExercises() {
@@ -175,19 +165,17 @@ public class MainViewModel extends ViewModel {
     }
 
     public void loadEvents(Training training) {
-        selectedTrainingId = training.getId();
         selectedTraining.postValue(training);
         db.getEvents(signedLogin.getValue(), training.getId());
     }
 
     public void addWorkout(WorkoutSet set) {
-        db.addWorkout(set, selectedLogin, selectedTrainingId, selectedEventId);
+        db.addWorkout(set, signedLogin.getValue(), selectedEvent.getValue().getId());
     }
 
     public void loadWorkoutSets(Event event) {
-        selectedEventId = event.getId();
         selectedEvent.postValue(event);
-        db.getWorkouts(signedLogin.getValue(), selectedTrainingId, selectedEventId);
+        db.getWorkouts(signedLogin.getValue(), event.getId());
     }
 
     /*public void getCurrentExercise(Event event) {

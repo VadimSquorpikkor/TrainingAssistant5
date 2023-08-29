@@ -2,12 +2,20 @@ package com.squorpikkor.trainingassistant5.data;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.squorpikkor.trainingassistant5.entity.BaseEntity;
 import com.squorpikkor.trainingassistant5.entity.Event;
 import com.squorpikkor.trainingassistant5.entity.Exercise;
 import com.squorpikkor.trainingassistant5.entity.Training;
@@ -18,47 +26,48 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+
+ *
+ *      Users      - id, name, login, password
+ *      Training   - id, date, userId
+ *      Exercise   - id, userId, name, bestEventId, lastEventId
+ *      Event      - id, exerciseId, data
+ *      WorkoutSet - id, eventId, data
+ *
+ *
+ *
+ * */
 public abstract class FirebaseDatabase {
 
     public static final String TAG = "fireBase";
 
     private final OnFailureListener onFailureListener = e -> Log.e(TAG, "Что-то пошло не так");
 
-    private static final String TABLE_USER = "users";
-    private static final String USER_ID = "id";
-    private static final String USER_NAME = "name";
-
     private static final String TABLE_EXERCISES = "exercises";
-    private static final String EXERCISES_ID = "id";
-    private static final String EXERCISES_PARENT = "parent_id";
     private static final String EXERCISE_NAME = "name";
     private static final String EXERCISE_BEST_ID = "best";
     private static final String EXERCISE_LAST_ID = "last";
     private static final String EXERCISE_PREDEFINED = "pred";
 
+    private static final String TABLE_USER = "users";
+    private static final String USER_ID = "id";
+    private static final String USER_NAME = "name";
 
-    //В контексте Firebase для Training и id, и date, и имя документа — это одно и то же значение,
-    //поэтому при работе с этой БД будет использоваться только имя документа для получения и id, и даты
     private static final String TABLE_TRAINING = "trainings";
-    private static final String TRAINING_ID = "id";
-    private static final String TRAINING_PARENT = "parent_id";
     private static final String TRAINING_DATE = "date";
 
     private static final String TABLE_EVENT = "events";
-    private static final String EVENT_ID = "id";
-    private static final String EVENT_PARENT = "parent_id";
     private static final String EVENT_EX_ID = "ex_id";
 
     private static final String TABLE_WORKOUT = "workouts";
-    private static final String WORKOUT_ID = "id";
-    private static final String WORKOUT_PARENT = "parent_id";
     private static final String WORKOUT_DATA = "data";
+    private static final String WORKOUT_ID = "id";
 
     private final FirebaseFirestore db;
 
     public FirebaseDatabase() {
         db = FirebaseFirestore.getInstance();
-        //////////////////////////addExercise(new Exercise("qweqwe"), "vadimserikov11@gmail.com");
     }
 
 
@@ -99,20 +108,13 @@ public abstract class FirebaseDatabase {
                         if (task.getResult()==null) return;
                         ArrayList<Exercise> list = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            String id = document.getId();// String.valueOf(doc.get(EXERCISE_ID));
                             String name = String.valueOf(document.get(EXERCISE_NAME));
                             Log.e(TAG, name);
                             String bestEventId = String.valueOf(document.get(EXERCISE_BEST_ID));
                             String lastEventId = String.valueOf(document.get(EXERCISE_LAST_ID));
-                            String pred = String.valueOf(document.get(EXERCISE_PREDEFINED));
-                            Log.e(TAG, pred);
-                            int predefined = 0;
-                            if (!pred.equals("null")) predefined = Integer.parseInt(pred);
-                            Exercise exercise = new Exercise(name);
-                            exercise.setId(document.getId());
-                            exercise.setName(name);
-                            exercise.setBestEventId(bestEventId);
-                            exercise.setLastEventId(lastEventId);
-                            exercise.setPredefinedTo(predefined);
+                            int predefined = Integer.parseInt(String.valueOf(document.get(EXERCISE_PREDEFINED)));
+                            Exercise exercise = new Exercise(id, name, bestEventId, lastEventId, predefined);
                             list.add(exercise);
                         }
                         onGetExercises(list);
@@ -124,9 +126,8 @@ public abstract class FirebaseDatabase {
 
     public void getEvents(String login, String trainingId) {
         db.collection(TABLE_USER).document(login)
-
+                .collection(TABLE_TRAINING).document(trainingId)
                 .collection(TABLE_EVENT)
-                .whereEqualTo(EVENT_PARENT, trainingId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -137,7 +138,7 @@ public abstract class FirebaseDatabase {
                             String ex_id = String.valueOf(document.get(EVENT_EX_ID));
                             Event event = new Event(ex_id);
                             event.setId(id);
-                            event.setParentId(trainingId);
+                            event.setTrainingId(trainingId);
                             list.add(event);
                         }
                         onGetEvents(list);
@@ -147,10 +148,11 @@ public abstract class FirebaseDatabase {
                 });
     }
 
-    public void getWorkouts(String login, String eventId) {
+    public void getWorkouts(String login, String trainingId, String eventId) {
         db.collection(TABLE_USER).document(login)
+                .collection(TABLE_TRAINING).document(trainingId)
+                .collection(TABLE_EVENT).document(eventId)
                 .collection(TABLE_WORKOUT)
-                .whereEqualTo(WORKOUT_PARENT, eventId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -159,7 +161,6 @@ public abstract class FirebaseDatabase {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String data = String.valueOf(document.get(WORKOUT_DATA));
                             WorkoutSet workoutSet = new WorkoutSet(data);
-                            workoutSet.setData(eventId);
                             list.add(workoutSet);
                         }
                         onGetWorkouts(list);
@@ -213,18 +214,23 @@ public abstract class FirebaseDatabase {
 
 //--------------------------------------------------------------------------------------------------
     public void addTraining(Training training, ArrayList<Event> list, String login) {
+        Date trDate = new Date();
+        String trainingId = String.valueOf(trDate.getTime());
+        training.setId(trainingId);
+
         Map<String, Object> data = new HashMap<>();
-        data.put(TRAINING_DATE, training.getDate());
+        data.put(TRAINING_DATE, trainingId);
+
 
         db.collection(TABLE_USER).document(training.getUserId()).collection(TABLE_TRAINING)
-                .document(training.getDate())
+                .document(trainingId)
                 .set(data)
                 .addOnSuccessListener(aVoid -> {
 
                     addNewTrainingListener(login);//todo а может без addNewTrainingListener, а сразу вызывать getTrainings(login);???
                     Log.e(TAG, "DocumentSnapshot successfully written!");
                     for (Event event : list) {
-                        addEvent(event, login, training.getDate());
+                        addEvent(event, login, trainingId);
                     }
                 })
                 .addOnFailureListener(onFailureListener);
@@ -238,7 +244,7 @@ public abstract class FirebaseDatabase {
                 .collection(TABLE_EXERCISES).document()
                 .set(data)
                 .addOnSuccessListener(aVoid -> addNewExerciseListener(login))
-                .addOnFailureListener(onFailureListener);
+                .addOnFailureListener(e -> Log.e(TAG, "addEvent Error writing document", e));//todo toast
     }
 
 
@@ -246,32 +252,36 @@ public abstract class FirebaseDatabase {
 
         Map<String, Object> data = new HashMap<>();
         data.put(EVENT_EX_ID, event.getExerciseId());
-        data.put(EVENT_PARENT, trainingId);
+
+        Log.e(TAG, event.getExerciseId());
+        Log.e(TAG, event.getTrainingId());
 
         db.collection(TABLE_USER).document(login)
+                .collection(TABLE_TRAINING).document(trainingId)
                 .collection(TABLE_EVENT).document(event.getExerciseId())
                 .set(data, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> addNewEventListener(login, trainingId))
-                .addOnFailureListener(onFailureListener);
+                .addOnFailureListener(e -> Log.e(TAG, "addEvent Error writing document", e));//todo toast
     }
 
-    public void addWorkout(WorkoutSet workoutSet, String login, String evId) {
+    public void addWorkout(WorkoutSet workoutSet, String login, String trId, String evId) {
         Date trDate = new Date();
         String setId = String.valueOf(trDate.getTime());
 
         Map<String, Object> data = new HashMap<>();
         data.put(WORKOUT_DATA, workoutSet.getData());
         data.put(WORKOUT_ID, setId);
-        data.put(WORKOUT_PARENT, evId);
 
         db.collection(TABLE_USER).document(login)
+                .collection(TABLE_TRAINING).document(trId)
+                .collection(TABLE_EVENT).document(evId)
                 .collection(TABLE_WORKOUT).document(setId)
                 .set(data, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
-                    addNewWorkoutListener(login, evId);
+                    addNewWorkoutListener(login, trId, evId);
                     Log.e(TAG, "addEvent DocumentSnapshot successfully written!");
                 })
-                .addOnFailureListener(onFailureListener);
+                .addOnFailureListener(e -> Log.e(TAG, "addEvent Error writing document", e));//todo toast
     }
 
 //--------------------------------------------------------------------------------------------------
@@ -294,17 +304,20 @@ public abstract class FirebaseDatabase {
 
     void addNewEventListener(String login, String trainingId) {
         db.collection(TABLE_USER).document(login)
+                .collection(TABLE_TRAINING).document(trainingId)
                 .collection(TABLE_EVENT).addSnapshotListener((queryDocumentSnapshots, error) -> {
                     Log.e(TAG, "listen ev2");
                     getEvents(login, trainingId);
                 });
     }
 
-    void addNewWorkoutListener(String login, String eventId) {
+    void addNewWorkoutListener(String login, String trainingId, String eventId) {
         db.collection(TABLE_USER).document(login)
+                .collection(TABLE_TRAINING).document(trainingId)
+                .collection(TABLE_EVENT).document(eventId)
                 .collection(TABLE_WORKOUT).addSnapshotListener((queryDocumentSnapshots, error) -> {
                     Log.e(TAG, "listen ev3");
-                    getWorkouts(login, eventId);
+                    getWorkouts(login, trainingId, eventId);
                 });
     }
 }

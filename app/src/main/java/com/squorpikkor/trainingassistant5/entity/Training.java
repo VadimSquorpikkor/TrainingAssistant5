@@ -8,7 +8,13 @@ public class Training extends BaseEntity {
 
     private float weight;
     private String effectivity;
-    private String date;
+    private final String userId;
+
+
+    public Training(String userId) {
+        super();
+        this.userId = userId;
+    }
 
 
     public float getWeight() {
@@ -29,24 +35,8 @@ public class Training extends BaseEntity {
 
 
 
-
-
-    private final String userId;
-
-    public Training(String userId) {
-        this.userId = userId;
-    }
-
     public String getUserId() {
         return userId;
     }// TODO: 23.08.2023 нахер нужно
-
-    public String getDate() {
-        return Utils.getDateStringFromLongString(date);
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 
 }
