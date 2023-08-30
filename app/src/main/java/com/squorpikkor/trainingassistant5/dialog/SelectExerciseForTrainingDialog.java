@@ -37,9 +37,6 @@ public class SelectExerciseForTrainingDialog extends BaseDialog {
          dismiss();
       });
 
-
-
-
       return dialog;
    }
 

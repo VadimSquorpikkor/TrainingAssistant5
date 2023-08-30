@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -16,6 +17,7 @@ import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.ThemeUtils;
 import com.squorpikkor.trainingassistant5.adapter.EventListAdapter;
 import com.squorpikkor.trainingassistant5.adapter.WorkoutListAdapter;
+import com.squorpikkor.trainingassistant5.dialog.AddWorkoutDialog;
 import com.squorpikkor.trainingassistant5.entity.Event;
 import com.squorpikkor.trainingassistant5.entity.WorkoutSet;
 
@@ -24,7 +26,7 @@ public class ExerciseFragment extends Fragment {
 
     private MainViewModel mViewModel;
 
-    private String eventId;
+    private View view;
 
     public static ExerciseFragment newInstance() {
         return new ExerciseFragment();
@@ -33,7 +35,7 @@ public class ExerciseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ThemeUtils.onActivityCreateSetTheme(getActivity());
-        View view = inflater.inflate(R.layout.fragment_exercise, container, false);
+        view = inflater.inflate(R.layout.fragment_exercise, container, false);
         mViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
         RecyclerView recycler = view.findViewById(R.id.recycler);
@@ -48,14 +50,15 @@ public class ExerciseFragment extends Fragment {
         mViewModel.getSelectedEvent().observe(getViewLifecycleOwner(), this::updateFragment);
 
         view.findViewById(R.id.add_set).setOnClickListener(view1 -> {
-            mViewModel.addWorkout(new WorkoutSet("60x12"));// TODO: 25.08.2023 диалог
+            new AddWorkoutDialog().show(getParentFragmentManager(), null);
         });
 
         return view;
     }
 
     public void updateFragment(Event event) {
-        eventId = event.getId();// TODO: 25.08.2023 вряд ли здесь
+        ((TextView)view.findViewById(R.id.event_name)).setText(event.getName());
+
     }
 
 }

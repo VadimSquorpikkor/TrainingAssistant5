@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squorpikkor.trainingassistant5.R;
+import com.squorpikkor.trainingassistant5.Utils;
 import com.squorpikkor.trainingassistant5.entity.Training;
 
 import java.util.ArrayList;
@@ -45,8 +46,7 @@ public class TrainingListAdapter extends RecyclerView.Adapter<TrainingListAdapte
     @Override
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         Training training = list.get(position);
-        String date = training.getDate();
-        holder.date.setText(date);
+        holder.date.setText(training.getFormattedDate());
     }
 
     @Override

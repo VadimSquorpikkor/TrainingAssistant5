@@ -54,7 +54,7 @@ public class EventListFragment extends Fragment {
     }
 
     private void updateTraining(Training training) {
-        ((TextView)view.findViewById(R.id.date)).setText(training.getDate());//todo
+        ((TextView)view.findViewById(R.id.date)).setText(training.getFormattedDate());
         ((TextView)view.findViewById(R.id.eff)).setText(training.getEffectivity());//todo
 
     }

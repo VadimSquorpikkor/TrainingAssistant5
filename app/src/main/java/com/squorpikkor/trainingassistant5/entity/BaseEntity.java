@@ -1,5 +1,7 @@
 package com.squorpikkor.trainingassistant5.entity;
 
+import com.squorpikkor.trainingassistant5.Utils;
+
 import java.util.Date;
 
 public class BaseEntity {
@@ -7,6 +9,10 @@ public class BaseEntity {
    String id;
    String parentId;
    String date;
+
+    public String getFormattedDate() {
+        return Utils.getDateStringFromLongString(this.date);
+    }
 
     public BaseEntity() {
         String date = String.valueOf(new Date().getTime());

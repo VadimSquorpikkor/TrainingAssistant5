@@ -159,7 +159,6 @@ public abstract class FirebaseDatabase {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String data = String.valueOf(document.get(WORKOUT_DATA));
                             WorkoutSet workoutSet = new WorkoutSet(data);
-                            workoutSet.setData(eventId);
                             list.add(workoutSet);
                         }
                         onGetWorkouts(list);

@@ -3,17 +3,15 @@ package com.squorpikkor.trainingassistant5;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squorpikkor.trainingassistant5.data.FirebaseDatabase;
-import com.squorpikkor.trainingassistant5.entity.BaseEntity;
-import com.squorpikkor.trainingassistant5.entity.Entity;
 import com.squorpikkor.trainingassistant5.entity.Event;
 import com.squorpikkor.trainingassistant5.entity.Exercise;
 import com.squorpikkor.trainingassistant5.entity.Training;
 import com.squorpikkor.trainingassistant5.entity.WorkoutSet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainViewModel extends ViewModel {
 
@@ -46,26 +44,32 @@ public class MainViewModel extends ViewModel {
 
     private final FirebaseDatabase db;
     FireAuth fireAuth;
-
-    Entity entity;
+    HashMap<String, String> exerciseDictionary;
 
     public MainViewModel() {
+        exerciseDictionary = new HashMap<>();
         trainings = new MutableLiveData<>(new ArrayList<>());
         exercises = new MutableLiveData<>(new ArrayList<>());
         events = new MutableLiveData<>(new ArrayList<>());
         sets = new MutableLiveData<>(new ArrayList<>());
         db = new FirebaseDatabase() {
             @Override public void onGetTrainings(ArrayList<Training> list) {
-                trainings.postValue(list);
+                trainings.setValue(list);
             }
             @Override public void onGetExercises(ArrayList<Exercise> list) {
-                exercises.postValue(list);
+                exercises.setValue(list);
+                for (Exercise ex:list) {
+                    exerciseDictionary.put(ex.getId(), ex.getName());
+                }
             }
             @Override public void onGetEvents(ArrayList<Event> list) {
-                events.postValue(list);
+                events.setValue(list);
+                for (Event event:list) {
+                    event.setName(exerciseDictionary.get(event.getExerciseId()));
+                }
             }
             @Override public void onGetWorkouts(ArrayList<WorkoutSet> list) {
-                sets.postValue(list);
+                sets.setValue(list);
             }
         };
 
@@ -78,12 +82,14 @@ public class MainViewModel extends ViewModel {
         password = new MutableLiveData<>("123123");// TODO: 17.08.2023
         loginState = new MutableLiveData<>(NO_ACTION);
 
+
+
         // TODO: 22.08.2023 перенести в БД
         fireAuth = new FireAuth() {
             @Override public void onRegisterInSuccess() {
                 loginState.postValue(REGISTER_SUCCESS);
                 if (FirebaseAuth.getInstance().getCurrentUser()!=null)
-                    signedLogin.postValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    signedLogin.setValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
             }
             @Override public void onRegisterFailure() {
@@ -95,6 +101,7 @@ public class MainViewModel extends ViewModel {
                     String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                     signedLogin.setValue(email);
                     loadTrainings();
+                    loadExercises();
                 }
 
             }
@@ -109,7 +116,7 @@ public class MainViewModel extends ViewModel {
             }
         };
 
-        entity = new Entity();
+        fireAuth.loginUserAccount(login.getValue(), password.getValue());
     }
 
     String getUserId() {
@@ -164,8 +171,13 @@ public class MainViewModel extends ViewModel {
         db.getExercises(signedLogin.getValue());
     }
 
+    public void selectTraining(Training training) {
+        selectedTraining.setValue(training);
+        selectedPage.setValue(PAGE_TRAINING);
+        loadEvents(training);
+    }
+
     public void loadEvents(Training training) {
-        selectedTraining.postValue(training);
         db.getEvents(signedLogin.getValue(), training.getId());
     }
 

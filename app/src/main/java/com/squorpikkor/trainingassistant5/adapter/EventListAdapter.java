@@ -47,7 +47,8 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Adap
     @Override
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         Event event = list.get(position);
-        holder.name.setText(event.getExerciseId());
+        holder.name.setText(event.getName());
+        holder.id.setText(event.getId());
     }
 
     @Override
@@ -57,12 +58,13 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Adap
 
     public class AdapterViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView name;
+        private final TextView name, id;
 
         public AdapterViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.name);
+            id = itemView.findViewById(R.id.id);
 
             itemView.setOnClickListener(v->{
                 if (listener!=null) listener.onItemClick(list.get(getAdapterPosition()));

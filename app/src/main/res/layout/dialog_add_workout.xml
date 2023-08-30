@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/vertical"
+    android:background="?attr/dialogBackground"
+    android:padding="8dp">
+
+
+    <TextView style="@style/textH1" android:text="Добавить подход"/>
+
+    <LinearLayout style="@style/horizontalCenter">
+
+        <NumberPicker
+            android:id="@+id/weight_picker"
+            android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp" />
+
+        <NumberPicker
+            android:id="@+id/count_picker"
+            android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/horizontalCenter">
+
+        <Button
+            android:id="@+id/button_cancel"
+            style="@style/CustomButton"
+            android:layout_margin="3dp"
+            android:background="@drawable/button_shape_selector"
+            android:text="@string/button_negative" />
+
+        <Button
+            android:id="@+id/button_select"
+            style="@style/CustomButton"
+            android:layout_margin="3dp"
+            android:background="@drawable/button_shape_selector"
+            android:text="@string/button_select" />
+
+    </LinearLayout>
+
+</LinearLayout>

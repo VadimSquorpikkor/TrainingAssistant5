@@ -11,11 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ico_training"
-        android:contentDescription="Тренировки" />
+        android:contentDescription="@string/tab1" />
 
     <TextView
         style="@style/tabText"
-        android:text="Тренировки"
+        android:text="@string/tab1"
         />
 
 </LinearLayout>

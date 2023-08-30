@@ -9,4 +9,7 @@
     <string name="button_sign_in">Войти</string>
     <string name="login">Login</string>
     <string name="button_select">Выбрать</string>
+    <string name="tab1">Главная</string>
+    <string name="tab2">Тренировка</string>
+    <string name="tab3">Упражнение</string>
 </resources>

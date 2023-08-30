@@ -33,10 +33,7 @@ public class TrainingListFragment extends Fragment {
         TrainingListAdapter adapter = new TrainingListAdapter();
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
-        adapter.setOnItemClickListener(training -> {
-            mViewModel.loadEvents(training);
-            mViewModel.getSelectedPage().postValue(PAGE_TRAINING);
-        });
+        adapter.setOnItemClickListener(training -> mViewModel.selectTraining(training));
         mViewModel.getTrainings().observe(getViewLifecycleOwner(), list -> {
             adapter.setList(list);
             if (list!=null && list.size()!=0) mViewModel.loadEvents(list.get(list.size()-1));
