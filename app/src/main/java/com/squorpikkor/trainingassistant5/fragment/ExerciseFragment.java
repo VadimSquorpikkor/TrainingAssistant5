@@ -49,7 +49,6 @@ public class ExerciseFragment extends Fragment {
 //            mViewModel.selectExercise(exercise);
 //            openInfoFragment();
         });
-        //mViewModel.getWorkoutSets().observe(getViewLifecycleOwner(), adapter::setList);
         mViewModel.getSelectedEvent().observe(getViewLifecycleOwner(), event -> {
             updateFragment(event);
             adapter.setList(event.getWorkoutSetList());

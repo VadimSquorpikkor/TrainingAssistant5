@@ -10,6 +10,7 @@ public class Event extends BaseEntity {
     private String exerciseId;
     private String name;
     private String workoutSet;
+    private int rate;
 
     public Event(String exerciseId) {
         super();

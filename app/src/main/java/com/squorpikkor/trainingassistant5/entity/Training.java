@@ -8,6 +8,7 @@ public class Training extends BaseEntity {
 
     private float weight;
     private String effectivity;
+    private String effPoints;
     private final String userId;
 
 
