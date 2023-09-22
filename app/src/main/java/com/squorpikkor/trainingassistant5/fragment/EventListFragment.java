@@ -39,12 +39,12 @@ public class EventListFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
         adapter.setOnItemClickListener(event -> {
-            mViewModel.loadWorkoutSets(event);
-            mViewModel.getSelectedPage().postValue(PAGE_EXERCISE);
+            mViewModel.selectEvent(event);
+            mViewModel.getSelectedPage().setValue(PAGE_EXERCISE);
         });
         mViewModel.getEvents().observe(getViewLifecycleOwner(), list -> {
             adapter.setList(list);
-            if (list!=null && list.size()!=0) mViewModel.loadWorkoutSets(list.get(list.size()-1));
+            if (list!=null && list.size()!=0) mViewModel.selectEvent(list.get(list.size()-1));
 
         });
 

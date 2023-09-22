@@ -14,6 +14,8 @@ public class Exercise extends BaseEntity {
     private String name;
     private String bestEventId;
     private String lastEventId;
+    private String bestSet;//60*10 70*10 80*5 70*6
+    private String lastSet;//60*10 70*10 80*3 70*6
 
     private boolean isChecked;
     private int predefinedTo;
@@ -60,5 +62,21 @@ public class Exercise extends BaseEntity {
 
     public void setPredefinedTo(int predefinedTo) {
         this.predefinedTo = predefinedTo;
+    }
+
+    public String getBestSet() {
+        return bestSet;
+    }
+
+    public void setBestSet(String bestSet) {
+        this.bestSet = bestSet;
+    }
+
+    public String getLastSet() {
+        return lastSet;
+    }
+
+    public void setLastSet(String lastSet) {
+        this.lastSet = lastSet;
     }
 }

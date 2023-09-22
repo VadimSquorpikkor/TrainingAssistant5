@@ -1,6 +1,7 @@
 package com.squorpikkor.trainingassistant5.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,14 @@ import com.squorpikkor.trainingassistant5.adapter.EventListAdapter;
 import com.squorpikkor.trainingassistant5.adapter.WorkoutListAdapter;
 import com.squorpikkor.trainingassistant5.dialog.AddWorkoutDialog;
 import com.squorpikkor.trainingassistant5.entity.Event;
+import com.squorpikkor.trainingassistant5.entity.Exercise;
 import com.squorpikkor.trainingassistant5.entity.WorkoutSet;
 
 /**По-сути — EventFragment, т.е. фрагмент с отображением текущей тренировки (не абстрактной) с отображением списка подходов*/
 public class ExerciseFragment extends Fragment {
 
     private MainViewModel mViewModel;
+    private Exercise selectedExercise;
 
     private View view;
 
@@ -46,8 +49,11 @@ public class ExerciseFragment extends Fragment {
 //            mViewModel.selectExercise(exercise);
 //            openInfoFragment();
         });
-        mViewModel.getWorkoutSets().observe(getViewLifecycleOwner(), adapter::setList);
-        mViewModel.getSelectedEvent().observe(getViewLifecycleOwner(), this::updateFragment);
+        //mViewModel.getWorkoutSets().observe(getViewLifecycleOwner(), adapter::setList);
+        mViewModel.getSelectedEvent().observe(getViewLifecycleOwner(), event -> {
+            updateFragment(event);
+            adapter.setList(event.getWorkoutSetList());
+        });
 
         view.findViewById(R.id.add_set).setOnClickListener(view1 -> {
             new AddWorkoutDialog().show(getParentFragmentManager(), null);
@@ -57,8 +63,8 @@ public class ExerciseFragment extends Fragment {
     }
 
     public void updateFragment(Event event) {
-        ((TextView)view.findViewById(R.id.event_name)).setText(event.getName());
-
+        selectedExercise = mViewModel.getExerciseById(event.getExerciseId());
+        ((TextView)view.findViewById(R.id.event_name)).setText(selectedExercise.getName());
     }
 
 }

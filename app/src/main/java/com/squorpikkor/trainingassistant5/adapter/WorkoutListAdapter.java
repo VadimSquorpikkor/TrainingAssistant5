@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.AdapterViewHolder> {
 
-    private ArrayList<WorkoutSet> list;
+    private ArrayList<WorkoutSet> list = new ArrayList<>();
 
 
 
@@ -48,7 +48,8 @@ public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.
     @Override
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         WorkoutSet set = list.get(position);
-        holder.name.setText(set.getData());
+        holder.weight.setText(set.getWeight()+" кг");
+        holder.count.setText(set.getWeight()+ " раз");
     }
 
     @Override
@@ -58,12 +59,14 @@ public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.
 
     public class AdapterViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView name;
+        private final TextView weight;
+        private final TextView count;
 
         public AdapterViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            name = itemView.findViewById(R.id.name);
+            weight = itemView.findViewById(R.id.weight);
+            count = itemView.findViewById(R.id.count);
 
             itemView.setOnClickListener(v->{
                 if (listener!=null) listener.onItemClick(list.get(getAdapterPosition()));

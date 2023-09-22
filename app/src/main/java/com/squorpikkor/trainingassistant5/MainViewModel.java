@@ -44,6 +44,7 @@ public class MainViewModel extends ViewModel {
 
     private final FirebaseDatabase db;
     FireAuth fireAuth;
+    @Deprecated
     HashMap<String, String> exerciseDictionary;
 
     public MainViewModel() {
@@ -68,9 +69,9 @@ public class MainViewModel extends ViewModel {
                     event.setName(exerciseDictionary.get(event.getExerciseId()));
                 }
             }
-            @Override public void onGetWorkouts(ArrayList<WorkoutSet> list) {
-                sets.setValue(list);
-            }
+//            @Override public void onGetWorkouts(ArrayList<WorkoutSet> list) {
+//                sets.setValue(list);
+//            }
         };
 
         selectedTraining = new MutableLiveData<>();
@@ -100,8 +101,8 @@ public class MainViewModel extends ViewModel {
                 if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
                     String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                     signedLogin.setValue(email);
-                    loadTrainings();
-                    loadExercises();
+                    loadAllTrainings();
+                    loadAllExercises();
                 }
 
             }
@@ -163,40 +164,34 @@ public class MainViewModel extends ViewModel {
     }
 
     /**Список всех тренировок пользователя*/
-    public void loadTrainings() {
+    public void loadAllTrainings() {
         db.getTrainings(signedLogin.getValue());
     }
-
-    public void loadExercises() {
+    /**Список всех упражнений пользователя*/
+    public void loadAllExercises() {
         db.getExercises(signedLogin.getValue());
     }
 
-    public void selectTraining(Training training) {
-        selectedTraining.setValue(training);
-        selectedPage.setValue(PAGE_TRAINING);
-        loadEvents(training);
-    }
 
-    public void loadEvents(Training training) {
+
+    public void loadEventsForTraining(Training training) {
+        selectedTraining.setValue(training);
+
         db.getEvents(signedLogin.getValue(), training.getId());
+    }
+    public void selectEvent(Event event) {
+        selectedEvent.postValue(event);
+        ///////////////////sets.setValue(Utils.parseSetFromString(event.getWorkoutSet()));
     }
 
     public void addWorkout(WorkoutSet set) {
-        db.addWorkout(set, signedLogin.getValue(), selectedEvent.getValue().getId());
+        Event event = selectedEvent.getValue();
+        event.addSet(set);
+        db.updateWorkoutSet(signedLogin.getValue(), event);
+
+        //todo пока просто записываю в event, потом сделаю, чтобы после записи в БД автоматом загружалась из БД обновленная версия event
+        selectedEvent.setValue(event);
     }
-
-    public void loadWorkoutSets(Event event) {
-        selectedEvent.postValue(event);
-        db.getWorkouts(signedLogin.getValue(), event.getId());
-    }
-
-    /*public void getCurrentExercise(Event event) {
-        //selectedPage.postValue(PAGE_EXERCISE);
-        selectedEvent.postValue(event);
-        db.getEvents(selectedTraining.getValue());
-    }*/
-
-
 
     /**Зарегить новый аккаунт*/
     public void signUp(String login, String password) {
@@ -227,4 +222,14 @@ public class MainViewModel extends ViewModel {
         }
 
     }
+
+    /**Получить абстрактное упражнение по id (из списка загруженных упражнений)*/
+    public Exercise getExerciseById(String id) {
+        for (Exercise exercise:exercises.getValue()) {
+            if (exercise.getId().equals(id)) return exercise;
+        }
+        return null;
+    }
+
+
 }

@@ -34,7 +34,9 @@ public class AddWorkoutDialog extends BaseDialog {
 
         view.findViewById(R.id.button_cancel).setOnClickListener(v->dismiss());
         view.findViewById(R.id.button_select).setOnClickListener(v-> {
-            mViewModel.addWorkout(new WorkoutSet(weightPicker.getValue()+"x"+countPicker.getValue()));
+            float weight = weightPicker.getValue();
+            int count = weightPicker.getValue();
+            mViewModel.addWorkout(new WorkoutSet(weight, count));
             dismiss();
         });
 

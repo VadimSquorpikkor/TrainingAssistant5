@@ -3,6 +3,7 @@ package com.squorpikkor.trainingassistant5.data;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -48,6 +49,7 @@ public abstract class FirebaseDatabase {
     private static final String EVENT_ID = "id";
     private static final String EVENT_PARENT = "parent_id";
     private static final String EVENT_EX_ID = "ex_id";
+    private static final String EVENT_SET = "set";
 
     private static final String TABLE_WORKOUT = "workouts";
     private static final String WORKOUT_ID = "id";
@@ -55,6 +57,8 @@ public abstract class FirebaseDatabase {
     private static final String WORKOUT_DATA = "data";
 
     private final FirebaseFirestore db;
+
+    // TODO: 21.09.2023 убрать из методов String login (будет задан в переменную при инициализации БД)
 
     public FirebaseDatabase() {
         db = FirebaseFirestore.getInstance();
@@ -65,7 +69,7 @@ public abstract class FirebaseDatabase {
     public abstract void onGetTrainings(ArrayList<Training> list);
     public abstract void onGetExercises(ArrayList<Exercise> list);
     public abstract void onGetEvents(ArrayList<Event> list);
-    public abstract void onGetWorkouts(ArrayList<WorkoutSet> list);
+    //public abstract void onGetWorkouts(ArrayList<WorkoutSet> list);
 
 
     public void getTrainings(String login) {
@@ -135,9 +139,11 @@ public abstract class FirebaseDatabase {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String id = document.getId();// String.valueOf(doc.get(EXERCISE_ID));
                             String ex_id = String.valueOf(document.get(EVENT_EX_ID));
+                            String set = String.valueOf(document.get(EVENT_SET));
                             Event event = new Event(ex_id);
                             event.setId(id);
                             event.setParentId(trainingId);
+                            event.setWorkoutSet(set);
                             list.add(event);
                         }
                         onGetEvents(list);
@@ -147,25 +153,46 @@ public abstract class FirebaseDatabase {
                 });
     }
 
-    public void getWorkouts(String login, String eventId) {
+    //если нужно несколько
+//    db.collection("users").document("frank")
+//        .update(mapOf(
+//            "age" to 13,
+//                "favorites.color" to "Red"
+//    ))
+
+    public void updateWorkoutSet(String login, Event event) {
         db.collection(TABLE_USER).document(login)
-                .collection(TABLE_WORKOUT)
-                .whereEqualTo(WORKOUT_PARENT, eventId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (task.getResult()==null) return;
-                        ArrayList<WorkoutSet> list = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String data = String.valueOf(document.get(WORKOUT_DATA));
-                            WorkoutSet workoutSet = new WorkoutSet(data);
-                            list.add(workoutSet);
-                        }
-                        onGetWorkouts(list);
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
+                .collection(TABLE_EVENT).document(event.getId())
+                .update(EVENT_SET, event.getWorkoutSet()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.e(TAG, "updated successfully");
                     }
-                });
+                })
+        ;
+
+    }
+
+    @Deprecated
+    public void getWorkouts(String login, String eventId) {
+//        db.collection(TABLE_USER).document(login)
+//                .collection(TABLE_WORKOUT)
+//                .whereEqualTo(WORKOUT_PARENT, eventId)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        if (task.getResult()==null) return;
+//                        ArrayList<WorkoutSet> list = new ArrayList<>();
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            String data = String.valueOf(document.get(WORKOUT_DATA));
+//                            WorkoutSet workoutSet = new WorkoutSet(data);
+//                            list.add(workoutSet);
+//                        }
+//                        onGetWorkouts(list);
+//                    } else {
+//                        Log.d(TAG, "Error getting documents: ", task.getException());
+//                    }
+//                });
     }
 //--------------------------------------------------------------------------------------------------
 
@@ -254,24 +281,24 @@ public abstract class FirebaseDatabase {
                 .addOnFailureListener(onFailureListener);
     }
 
-    public void addWorkout(WorkoutSet workoutSet, String login, String evId) {
-        Date trDate = new Date();
-        String setId = String.valueOf(trDate.getTime());
-
-        Map<String, Object> data = new HashMap<>();
-        data.put(WORKOUT_DATA, workoutSet.getData());
-        data.put(WORKOUT_ID, setId);
-        data.put(WORKOUT_PARENT, evId);
-
-        db.collection(TABLE_USER).document(login)
-                .collection(TABLE_WORKOUT).document(setId)
-                .set(data, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    addNewWorkoutListener(login, evId);
-                    Log.e(TAG, "addEvent DocumentSnapshot successfully written!");
-                })
-                .addOnFailureListener(onFailureListener);
-    }
+//    public void addWorkout(WorkoutSet workoutSet, String login, String evId) {
+//        Date trDate = new Date();
+//        String setId = String.valueOf(trDate.getTime());
+//
+//        Map<String, Object> data = new HashMap<>();
+//        data.put(WORKOUT_DATA, workoutSet.getData());
+//        data.put(WORKOUT_ID, setId);
+//        data.put(WORKOUT_PARENT, evId);
+//
+//        db.collection(TABLE_USER).document(login)
+//                .collection(TABLE_WORKOUT).document(setId)
+//                .set(data, SetOptions.merge())
+//                .addOnSuccessListener(aVoid -> {
+//                    addNewWorkoutListener(login, evId);
+//                    Log.e(TAG, "addEvent DocumentSnapshot successfully written!");
+//                })
+//                .addOnFailureListener(onFailureListener);
+//    }
 
 //--------------------------------------------------------------------------------------------------
 
@@ -299,11 +326,13 @@ public abstract class FirebaseDatabase {
                 });
     }
 
-    void addNewWorkoutListener(String login, String eventId) {
-        db.collection(TABLE_USER).document(login)
-                .collection(TABLE_WORKOUT).addSnapshotListener((queryDocumentSnapshots, error) -> {
-                    Log.e(TAG, "listen ev3");
-                    getWorkouts(login, eventId);
-                });
-    }
+
+
+//    void addNewWorkoutListener(String login, String eventId) {
+//        db.collection(TABLE_USER).document(login)
+//                .collection(TABLE_WORKOUT).addSnapshotListener((queryDocumentSnapshots, error) -> {
+//                    Log.e(TAG, "listen ev3");
+//                    getWorkouts(login, eventId);
+//                });
+//    }
 }
