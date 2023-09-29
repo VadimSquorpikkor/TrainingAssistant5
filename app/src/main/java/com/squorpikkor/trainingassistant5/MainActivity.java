@@ -18,6 +18,8 @@ import com.squorpikkor.trainingassistant5.fragment.ExerciseFragment;
 import com.squorpikkor.trainingassistant5.fragment.EventListFragment;
 import com.squorpikkor.trainingassistant5.fragment.TrainingListFragment;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -79,7 +81,37 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mViewModel.getSignedLogin().observe(this, emailText::setText);
+
+
+
+
+
+        ArrayList<www> list = new ArrayList<>();
+        list.add(new www(1));
+        list.add(new www(2));
+        list.add(new www(3));
+        list.add(new www(4));
+        SLog.e(list.get(2).i);
+        changeArray(list);
+        SLog.e(list.get(2).i);
+
     }
+
+    class www {
+        int i;
+        public www(int i) {this.i = i;}
+    }
+
+    void changeArray(ArrayList<www> list) {
+        list.get(2).i=5;
+    }
+
+
+
+
+
+
+
 
 
 

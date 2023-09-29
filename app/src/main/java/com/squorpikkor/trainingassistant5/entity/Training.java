@@ -1,8 +1,5 @@
 package com.squorpikkor.trainingassistant5.entity;
 
-
-import com.squorpikkor.trainingassistant5.Utils;
-
 /**Тренировка. Тот список упражнений, который нужно сделать в зале в конкретный день*/
 public class Training extends BaseEntity {
 
@@ -17,7 +14,7 @@ public class Training extends BaseEntity {
         this.userId = userId;
     }
 
-
+    /**Вес пользователя*/
     public float getWeight() {
         return weight;
     }
@@ -33,8 +30,6 @@ public class Training extends BaseEntity {
     public void setEffectivity(String effectivity) {
         this.effectivity = effectivity;
     }
-
-
 
     public String getUserId() {
         return userId;

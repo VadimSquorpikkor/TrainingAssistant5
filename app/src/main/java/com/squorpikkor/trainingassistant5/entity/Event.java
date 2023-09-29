@@ -11,10 +11,19 @@ public class Event extends BaseEntity {
     private String name;
     private String workoutSet;
     private int rate;
+    private boolean isComplete;//если упражнение закончено, то уже нельзя будет добавить подход (только просмотр данных). При просмотре истории не будет отображаться кнопка "+"
 
     public Event(String exerciseId) {
         super();
         this.exerciseId = exerciseId;
+    }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean complete) {
+        isComplete = complete;
     }
 
     public String getExerciseId() {
@@ -42,7 +51,13 @@ public class Event extends BaseEntity {
     }
 
 
+    public int getRate() {
+        return rate;
+    }
 
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
 
     public ArrayList<WorkoutSet> getWorkoutSetList() {
         return parseSetFromString(workoutSet);

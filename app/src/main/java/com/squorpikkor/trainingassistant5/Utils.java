@@ -1,6 +1,9 @@
 package com.squorpikkor.trainingassistant5;
 
 import android.text.format.DateFormat;
+
+import com.squorpikkor.trainingassistant5.entity.Event;
+import com.squorpikkor.trainingassistant5.entity.Exercise;
 import com.squorpikkor.trainingassistant5.entity.WorkoutSet;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +34,27 @@ public class Utils {
         }
     }
 
+    enum effectiveColor {
+        RED, ORANGE, GREEN, YELLOW, BLUE
+    }
+
+//    public static effectiveColor getEffPoints() {
+//
+//    }
+
+    //todo наверное нужно перенести в Training
+    /**
+     * Очки эффективности тренировки
+     * @param list Список упражнений в тренировке
+     * @return effPoints
+     */
+    public static int getEffPoints(ArrayList<Event> list) {
+        int points = 0;
+        for (Event e:list) points+=e.getRate();
+        return points;
+    }
+
+    //Именно 0 1 2 4 6, эти значение будут использоваться как effPoints
 
     /**хуже чем в прошлый раз*/
     public static final int WORSE = 0;
@@ -39,9 +63,9 @@ public class Utils {
     /**лучше, чем в прошлый, но не рекорд*/
     public static final int BETTER = 2;
     /**новый рекорд, но с прежним весом*/
-    public static final int BEST = 3;
+    public static final int BEST = 4;
     /**новый вес*/
-    public static final int BEST_NEW_WEIGHT = 4;
+    public static final int BEST_NEW_WEIGHT = 6;
 
     /**
      * Сравнивает две тренировки.
@@ -118,6 +142,7 @@ public class Utils {
      * </ul>
      */
     public static int compareWorkouts(ArrayList<WorkoutSet> current, ArrayList<WorkoutSet> last, ArrayList<WorkoutSet> best){
+        if (current==null||last==null||best==null) return -1;
         Collections.sort(best, new ExerciseComparator());
         Collections.sort(last, new ExerciseComparator());
         Collections.sort(current, new ExerciseComparator());

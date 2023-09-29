@@ -2,6 +2,7 @@ package com.squorpikkor.trainingassistant5.data;
 
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -9,9 +10,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.squorpikkor.trainingassistant5.SLog;
 import com.squorpikkor.trainingassistant5.entity.Event;
 import com.squorpikkor.trainingassistant5.entity.Exercise;
 import com.squorpikkor.trainingassistant5.entity.Training;
+import com.squorpikkor.trainingassistant5.entity.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +28,7 @@ public abstract class FirebaseDatabase {
 
     private static final String TABLE_USER = "users";
     private static final String USER_ID = "id";
+    private static final String USER_EMAIL = "name";
     private static final String USER_NAME = "name";
 
     private static final String TABLE_EXERCISES = "exercises";
@@ -42,12 +46,15 @@ public abstract class FirebaseDatabase {
     private static final String TRAINING_ID = "id";
     private static final String TRAINING_PARENT = "parent_id";
     private static final String TRAINING_DATE = "date";
+    private static final String TRAINING_WEIGHT = "weight";
+    private static final String TRAINING_EFFECTIVITY = "eff";
 
     private static final String TABLE_EVENT = "events";
     private static final String EVENT_ID = "id";
     private static final String EVENT_PARENT = "parent_id";
     private static final String EVENT_EX_ID = "ex_id";
     private static final String EVENT_SET = "set";
+    private static final String EVENT_IS_COMPLETE = "is_complete";
 
     private final FirebaseFirestore db;
 
@@ -59,11 +66,81 @@ public abstract class FirebaseDatabase {
     }
 
 
+
+
     public abstract void onGetTrainings(ArrayList<Training> list);
     public abstract void onGetExercises(ArrayList<Exercise> list);
     public abstract void onGetEvents(ArrayList<Event> list);
-    //public abstract void onGetWorkouts(ArrayList<WorkoutSet> list);
+    public abstract void onGetUserData(User user);
+    public abstract void onGetLastEvent(Event event);
+    public abstract void onGetBestEvent(Event event);
 
+    private Event getEventByDocument(DocumentSnapshot document) {
+        String id = document.getId();// String.valueOf(doc.get(EXERCISE_ID));
+        String ex_id = String.valueOf(document.get(EVENT_EX_ID));
+        String set = String.valueOf(document.get(EVENT_SET));
+        String parent = String.valueOf(document.get(EVENT_PARENT));
+        boolean isComplete = String.valueOf(document.get(EVENT_IS_COMPLETE)).equals("true");
+        Event event = new Event(ex_id);
+        event.setId(id);
+        event.setParentId(parent);
+        event.setWorkoutSet(set);
+        event.setComplete(isComplete);
+        return event;
+    }
+
+    public void getLastEvent(String login, String lastId) {
+        db.collection(TABLE_USER).document(login)
+                .collection(TABLE_EVENT).document(lastId)
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document!=null && document.exists()) {
+                            onGetLastEvent(getEventByDocument(document));
+                        } else {
+                            Log.e(TAG, "No such document "+lastId);
+                        }
+                    } else {
+                        Log.e(TAG, "get failed with ", task.getException());
+                    }
+                });
+    }
+
+    public void getBestEvent(String login, String bestId) {
+        SLog.e("best = "+bestId);
+        if (bestId.equals("")) return;
+        db.collection(TABLE_USER).document(login)
+                .collection(TABLE_EVENT).document(bestId)
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document!=null && document.exists()) {
+                            onGetBestEvent(getEventByDocument(document));
+                        } else {
+                            Log.e(TAG, "No such document "+bestId);
+                        }
+                    } else {
+                        Log.e(TAG, "get failed with ", task.getException());
+                    }
+                });
+    }
+
+    public void getUserData(String login) {
+        db.collection(TABLE_USER).document(login)
+        .get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Log.e(TAG, "DocumentSnapshot data: " + document.getData());
+                    onGetUserData(new User(String.valueOf(document.get(USER_ID)), String.valueOf(document.get(USER_NAME))));
+                } else {
+                    Log.e(TAG, "No such document");
+                }
+            } else {
+                Log.e(TAG, "get failed with ", task.getException());
+            }
+        });
+    }
 
     public void getTrainings(String login) {
         db.collection(TABLE_USER).document(login)
@@ -130,13 +207,7 @@ public abstract class FirebaseDatabase {
                         if (task.getResult()==null) return;
                         ArrayList<Event> list = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String id = document.getId();// String.valueOf(doc.get(EXERCISE_ID));
-                            String ex_id = String.valueOf(document.get(EVENT_EX_ID));
-                            String set = String.valueOf(document.get(EVENT_SET));
-                            Event event = new Event(ex_id);
-                            event.setId(id);
-                            event.setParentId(trainingId);
-                            event.setWorkoutSet(set);
+                            Event event = getEventByDocument(document);
                             list.add(event);
                         }
                         onGetEvents(list);

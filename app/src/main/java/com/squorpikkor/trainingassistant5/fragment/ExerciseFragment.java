@@ -54,6 +54,22 @@ public class ExerciseFragment extends Fragment {
             adapter.setList(event.getWorkoutSetList());
         });
 
+
+        RecyclerView lastRecycler = view.findViewById(R.id.last_recycler);
+        WorkoutListAdapter adapter1 = new WorkoutListAdapter();
+        lastRecycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        lastRecycler.setAdapter(adapter1);
+        mViewModel.getLastEvent().observe(getViewLifecycleOwner(), event ->
+                adapter1.setList(event.getWorkoutSetList()));
+
+        RecyclerView bestRecycler = view.findViewById(R.id.best_recycler);
+        WorkoutListAdapter adapter2 = new WorkoutListAdapter();
+        bestRecycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        bestRecycler.setAdapter(adapter2);
+        mViewModel.getBestEvent().observe(getViewLifecycleOwner(), event ->
+                adapter2.setList(event.getWorkoutSetList()));
+
+
         view.findViewById(R.id.add_set).setOnClickListener(view1 -> {
             new AddWorkoutDialog().show(getParentFragmentManager(), null);
         });

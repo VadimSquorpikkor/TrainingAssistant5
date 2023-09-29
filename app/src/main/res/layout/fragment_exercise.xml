@@ -24,13 +24,51 @@
         app:layout_constraintTop_toBottomOf="@+id/title1"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <LinearLayout style="@style/horizontalCenter"
+        android:gravity="top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_name" />
+        app:layout_constraintTop_toBottomOf="@+id/event_name">
+
+        <LinearLayout style="@style/vertical" android:layout_weight="1">
+
+            <TextView style="@style/textH3" android:text="Предыдущий"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/last_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/vertical" android:layout_weight="1">
+
+            <TextView style="@style/textH3" android:text="Сейчас"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/vertical" android:layout_weight="1">
+
+            <TextView style="@style/textH3" android:text="Лучший"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/best_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/add_set"
