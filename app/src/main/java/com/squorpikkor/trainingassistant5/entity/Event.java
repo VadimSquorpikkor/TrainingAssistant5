@@ -65,7 +65,8 @@ public class Event extends BaseEntity {
 
     /**Добавить подход*/
     public void addSet(WorkoutSet set) {
-        workoutSet = workoutSet+" "+ parseWorkoutToString(set);
+        if (workoutSet==null || workoutSet.equals("null")) workoutSet = parseWorkoutToString(set);
+        else workoutSet = workoutSet+" "+ parseWorkoutToString(set);
     }
 
     private String parseWorkoutToString(WorkoutSet workoutSet) {

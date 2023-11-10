@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squorpikkor.trainingassistant5.R;
-import com.squorpikkor.trainingassistant5.entity.Event;
 import com.squorpikkor.trainingassistant5.entity.WorkoutSet;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.
 
     @SuppressLint("NotifyDataSetChanged")
     public void setList(ArrayList<WorkoutSet> list) {
-        if (list==null) this.list = new ArrayList<>();
+        if (list==null) list = new ArrayList<>();
         this.list = list;
         notifyDataSetChanged();
     }
@@ -49,7 +48,7 @@ public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         WorkoutSet set = list.get(position);
         holder.weight.setText(set.getWeight()+" кг");
-        holder.count.setText(set.getWeight()+ " раз");
+        holder.count.setText(set.getCount()+ " раз");
     }
 
     @Override

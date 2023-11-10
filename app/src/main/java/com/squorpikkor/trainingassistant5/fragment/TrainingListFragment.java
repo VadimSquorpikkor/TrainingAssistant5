@@ -37,10 +37,7 @@ public class TrainingListFragment extends Fragment {
             mViewModel.loadEventsForTraining(training);
             mViewModel.getSelectedPage().setValue(PAGE_TRAINING);
         });
-        mViewModel.getTrainings().observe(getViewLifecycleOwner(), list -> {
-            adapter.setList(list);
-            if (list!=null && list.size()!=0) mViewModel.loadEventsForTraining(list.get(list.size()-1));
-        });
+        mViewModel.getTrainings().observe(getViewLifecycleOwner(), adapter::setList);
 
         view.findViewById(R.id.add_training).setOnClickListener(v->addTraining());
 

@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squorpikkor.trainingassistant5.R;
-import com.squorpikkor.trainingassistant5.Utils;
 import com.squorpikkor.trainingassistant5.entity.Training;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class TrainingListAdapter extends RecyclerView.Adapter<TrainingListAdapte
 
     @SuppressLint("NotifyDataSetChanged")
     public void setList(ArrayList<Training> list) {
-        if (list==null) this.list = new ArrayList<>();
+        if (list==null) list = new ArrayList<>();
         this.list = list;
         notifyDataSetChanged();
     }

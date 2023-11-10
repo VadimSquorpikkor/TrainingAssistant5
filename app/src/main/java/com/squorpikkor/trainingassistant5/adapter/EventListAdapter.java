@@ -4,15 +4,15 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squorpikkor.trainingassistant5.App;
 import com.squorpikkor.trainingassistant5.R;
+import com.squorpikkor.trainingassistant5.SLog;
 import com.squorpikkor.trainingassistant5.entity.Event;
-import com.squorpikkor.trainingassistant5.entity.Exercise;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Adap
 
     @SuppressLint("NotifyDataSetChanged")
     public void setList(ArrayList<Event> list) {
-        if (list==null) this.list = new ArrayList<>();
+        if (list==null) list = new ArrayList<>();
         this.list = list;
         notifyDataSetChanged();
     }
@@ -47,8 +47,14 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Adap
     @Override
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
         Event event = list.get(position);
+
+        SLog.line();
+        SLog.e("name = "+event.getName());
+        SLog.e("result = "+event.getWorkoutSet());
         holder.name.setText(event.getName());
-        holder.id.setText(event.getId());
+        holder.result.setText(event.getWorkoutSet()==null?
+                App.getContext().getString(R.string.empty_value):event.getWorkoutSet().equals("null")?
+                        App.getContext().getString(R.string.empty_value):event.getWorkoutSet());
     }
 
     @Override
@@ -58,13 +64,13 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Adap
 
     public class AdapterViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView name, id;
+        private final TextView name, result;
 
         public AdapterViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.name);
-            id = itemView.findViewById(R.id.id);
+            result = itemView.findViewById(R.id.result);
 
             itemView.setOnClickListener(v->{
                 if (listener!=null) listener.onItemClick(list.get(getAdapterPosition()));

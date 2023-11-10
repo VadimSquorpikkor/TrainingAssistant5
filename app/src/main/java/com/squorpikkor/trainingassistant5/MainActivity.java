@@ -14,11 +14,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.squorpikkor.trainingassistant5.dialog.SignInDialog;
-import com.squorpikkor.trainingassistant5.fragment.ExerciseFragment;
+import com.squorpikkor.trainingassistant5.fragment.EventFragment;
 import com.squorpikkor.trainingassistant5.fragment.EventListFragment;
 import com.squorpikkor.trainingassistant5.fragment.TrainingListFragment;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         PagerAdapter sectionsPagerAdapter = new PagerAdapter(getSupportFragmentManager(), getLifecycle());
         sectionsPagerAdapter.addFragment(new TrainingListFragment());
         sectionsPagerAdapter.addFragment(new EventListFragment());
-        sectionsPagerAdapter.addFragment(new ExerciseFragment());
+        sectionsPagerAdapter.addFragment(new EventFragment());
 
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
@@ -75,45 +73,13 @@ public class MainActivity extends AppCompatActivity {
         TextView emailText = headerView.findViewById(R.id.accountEmail);
 //        accountImage = headerView.findViewById(R.id.account_image);
 
-        headerView.findViewById(R.id.accountImage).setOnClickListener(v-> {
+        headerView.findViewById(R.id.accountImage).setOnClickListener(v -> {
             SignInDialog.newInstance().show(getSupportFragmentManager(), null);
             drawer_layout.closeDrawer(GravityCompat.START);
         });
 
         mViewModel.getSignedLogin().observe(this, emailText::setText);
 
-
-
-
-
-        ArrayList<www> list = new ArrayList<>();
-        list.add(new www(1));
-        list.add(new www(2));
-        list.add(new www(3));
-        list.add(new www(4));
-        SLog.e(list.get(2).i);
-        changeArray(list);
-        SLog.e(list.get(2).i);
-
     }
-
-    class www {
-        int i;
-        public www(int i) {this.i = i;}
-    }
-
-    void changeArray(ArrayList<www> list) {
-        list.get(2).i=5;
-    }
-
-
-
-
-
-
-
-
-
-
 
 }

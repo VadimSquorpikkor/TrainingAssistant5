@@ -6,10 +6,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
+        android:id="@+id/rate"
+        tools:text="5"
+        style="@style/textH1"
+        android:layout_margin="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/title1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="eventList"
+        android:text="Список подходов"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

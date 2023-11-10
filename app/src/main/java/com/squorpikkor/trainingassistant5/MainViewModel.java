@@ -60,30 +60,38 @@ public class MainViewModel extends ViewModel {
         sets = new MutableLiveData<>(new ArrayList<>());
         db = new FirebaseDatabase() {
             @Override public void onGetTrainings(ArrayList<Training> list) {
+                SLog.e("♦onGetTrainings");
                 trainings.setValue(list);
+                loadEventsForTraining(list.get(0));
             }
             @Override public void onGetExercises(ArrayList<Exercise> list) {
+                SLog.e("♦onGetExercises");
                 exercises.setValue(list);
                 for (Exercise ex:list) {
                     exerciseDictionary.put(ex.getId(), ex.getName());
                 }
             }
             @Override public void onGetEvents(ArrayList<Event> list) {
+                SLog.e("♦onGetEvents");
                 events.setValue(list);
                 for (Event event:list) {
                     event.setName(exerciseDictionary.get(event.getExerciseId()));
                 }
+                if (list!=null && list.size()!=0) selectEvent(list.get(0));
             }
 
             @Override public void onGetUserData(User user) {
+                SLog.e("♦onGetUserData");
                 SLog.e("user.getName() = "+user.getName());
                 SLog.e("user.getEmail() = "+user.getEmail());
 
             }
             @Override public void onGetLastEvent(Event event) {
+                SLog.e("♦onGetLastEvent");
                 lastEvent.setValue(event);
             }
             @Override public void onGetBestEvent(Event event) {
+                SLog.e("♦onGetBestEvent");
                 bestEvent.setValue(event);
             }
         };
@@ -194,6 +202,7 @@ public class MainViewModel extends ViewModel {
 
     /**Список всех тренировок пользователя*/
     public void loadAllTrainings() {
+        SLog.e("loadAllTrainings");
         db.getTrainings(signedLogin.getValue());
     }
     /**Список всех упражнений пользователя*/
@@ -208,6 +217,7 @@ public class MainViewModel extends ViewModel {
 
 
     public void loadEventsForTraining(Training training) {
+        // TODO: 10.11.2023 если уже загружена -- не загружать
         selectedTraining.setValue(training);
         db.getEvents(signedLogin.getValue(), training.getId());
     }
@@ -221,29 +231,30 @@ public class MainViewModel extends ViewModel {
     }
 
     public void selectEvent(Event event) {
+        SLog.e("selectEvent");
         getLastAndBestEvent(event);
         selectedEvent.postValue(event);
     }
 
     public void addWorkout(WorkoutSet set) {
-        Event event = selectedEvent.getValue();
-        event.addSet(set);
-
-
+        Event current = selectedEvent.getValue();
+        Event last = lastEvent.getValue();
+        Event best = bestEvent.getValue();
+        ArrayList<WorkoutSet> lastSet = null;
+        ArrayList<WorkoutSet> bestSet = null;
+        if (last!=null) lastSet=last.getWorkoutSetList();
+        if (best!=null) bestSet=best.getWorkoutSetList();
+        current.addSet(set);
 
         //todo пока просто записываю в event, потом сделаю, чтобы после записи в БД автоматом загружалась ИЗ БД обновленная версия event
 
-        int rate = Utils.compareWorkouts(
-                event.getWorkoutSetList(),
-                lastEvent.getValue().getWorkoutSetList(),
-                bestEvent.getValue().getWorkoutSetList()
-        );
+        int rate = Utils.compareWorkouts(current.getWorkoutSetList(), lastSet, bestSet);
 
-        event.setRate(rate);//todo обновление рейтинга ещё не сохранено в БД
+        current.setRate(rate);//todo обновление рейтинга ещё не сохранено в БД
 
-        selectedEvent.setValue(event);
+        selectedEvent.setValue(current);
 
-        db.updateWorkoutSet(signedLogin.getValue(), event);//сохранение в БД
+        db.updateWorkoutSet(signedLogin.getValue(), current);//сохранение в БД
     }
 
     /**Зарегить новый аккаунт*/

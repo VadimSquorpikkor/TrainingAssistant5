@@ -42,11 +42,7 @@ public class EventListFragment extends Fragment {
             mViewModel.selectEvent(event);
             mViewModel.getSelectedPage().setValue(PAGE_EXERCISE);
         });
-        mViewModel.getEvents().observe(getViewLifecycleOwner(), list -> {
-            adapter.setList(list);
-            if (list!=null && list.size()!=0) mViewModel.selectEvent(list.get(list.size()-1));
-
-        });
+        mViewModel.getEvents().observe(getViewLifecycleOwner(), adapter::setList);
 
         mViewModel.getSelectedTraining().observe(getViewLifecycleOwner(), this::updateTraining);
 

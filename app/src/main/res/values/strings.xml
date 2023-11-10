@@ -12,4 +12,7 @@
     <string name="tab1">Главная</string>
     <string name="tab2">Тренировка</string>
     <string name="tab3">Упражнение</string>
+
+    <string name="empty_value">- - -</string>
+    <string name="emp">- - -</string>
 </resources>

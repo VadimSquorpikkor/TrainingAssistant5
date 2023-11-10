@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.Checkable;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.entity.Exercise;
-import com.squorpikkor.trainingassistant5.entity.Training;
 
 import java.util.ArrayList;
 
@@ -35,11 +32,11 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
     @SuppressLint("NotifyDataSetChanged")
     public void setList(ArrayList<Exercise> list) {
+        if (list==null) list = new ArrayList<>();
+        this.list = list;
         for (Exercise e:list) {
             Log.e("", "list - "+e.getName());
         }
-        if (list==null) this.list = new ArrayList<>();
-        this.list = list;
         notifyDataSetChanged();
     }
 
