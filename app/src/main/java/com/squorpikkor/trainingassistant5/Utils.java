@@ -142,7 +142,14 @@ public class Utils {
      * </ul>
      */
     public static int compareWorkouts(ArrayList<WorkoutSet> current, ArrayList<WorkoutSet> last, ArrayList<WorkoutSet> best){
-        if (current==null||last==null||best==null) return -1;
+        //if (current==null||last==null||best==null) return -1;
+
+        if (last==null && best==null) return BEST;//когда записей нет, значит это первая тренировка, а значит сохраняем тренировку как лучшую
+        if (best==null) return BEST;
+        if (last==null) return -1;
+        if (current==null) return -1;
+
+
         Collections.sort(best, new ExerciseComparator());
         Collections.sort(last, new ExerciseComparator());
         Collections.sort(current, new ExerciseComparator());
@@ -153,6 +160,18 @@ public class Utils {
             if (compareResult(current, last)==BEST_NEW_WEIGHT||
                     compareResult(current, last)==BETTER) return BETTER;
             else return compareResult(current, last);
+        }
+    }
+
+    /***/
+    public static int getRateColor(int rate) {
+        switch (rate) {
+            default:
+            case WORSE: return R.color.rate_red;
+            case SAME: return R.color.rate_orange;
+            case BETTER: return R.color.rate_yellow;
+            case BEST: return R.color.rate_green;
+            case BEST_NEW_WEIGHT: return R.color.rate_blue;
         }
     }
 }

@@ -29,5 +29,8 @@
         <item name="menuTextColor">@color/white</item>
 
         <item name="dialogBackground">@color/dark_grey</item>
+
+        <item name="ButtonGreen">@color/dark_green</item>
+        <item name="Button.Disabled">@color/colorGray</item>
     </style>
 </resources>

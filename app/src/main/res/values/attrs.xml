@@ -29,4 +29,8 @@
     <attr name="menuTextColor" format="reference"/>
 
     <attr name="dialogBackground" format="color"/>
+
+
+    <attr name="ButtonGreen" format="color"/>
+    <attr name="Button.Disabled" format="color"/>
 </resources>

@@ -1,5 +1,10 @@
 package com.squorpikkor.trainingassistant5;
 
+import static com.squorpikkor.trainingassistant5.Utils.BEST;
+import static com.squorpikkor.trainingassistant5.Utils.BEST_NEW_WEIGHT;
+
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -23,12 +28,11 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Training>> trainings;
     private final MutableLiveData<ArrayList<Exercise>> exercises;
     private final MutableLiveData<ArrayList<Event>> events;
-    private final MutableLiveData<ArrayList<WorkoutSet>> sets;
 
     // TODO: 24.08.2023 мютабл не нужен. Простые классы. или вообще удалить
     //Entities
     private final MutableLiveData<Training> selectedTraining;
-    private final MutableLiveData<Event> selectedEvent;
+    private final MutableLiveData<Integer> selectedEvent;
     private final MutableLiveData<Event> lastEvent;
     private final MutableLiveData<Event> bestEvent;
 
@@ -45,10 +49,9 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<String> password;
     private final MutableLiveData<Integer> loginState;
 
-    private final FirebaseDatabase db;
-    FireAuth fireAuth;
-    @Deprecated
-    HashMap<String, String> exerciseDictionary;
+    private FirebaseDatabase db;
+    private final FireAuth fireAuth;
+    private final HashMap<String, String> exerciseDictionary;
 
     public MainViewModel() {
         exerciseDictionary = new HashMap<>();
@@ -57,44 +60,6 @@ public class MainViewModel extends ViewModel {
         events = new MutableLiveData<>(new ArrayList<>());
         lastEvent = new MutableLiveData<>();
         bestEvent = new MutableLiveData<>();
-        sets = new MutableLiveData<>(new ArrayList<>());
-        db = new FirebaseDatabase() {
-            @Override public void onGetTrainings(ArrayList<Training> list) {
-                SLog.e("♦onGetTrainings");
-                trainings.setValue(list);
-                loadEventsForTraining(list.get(0));
-            }
-            @Override public void onGetExercises(ArrayList<Exercise> list) {
-                SLog.e("♦onGetExercises");
-                exercises.setValue(list);
-                for (Exercise ex:list) {
-                    exerciseDictionary.put(ex.getId(), ex.getName());
-                }
-            }
-            @Override public void onGetEvents(ArrayList<Event> list) {
-                SLog.e("♦onGetEvents");
-                events.setValue(list);
-                for (Event event:list) {
-                    event.setName(exerciseDictionary.get(event.getExerciseId()));
-                }
-                if (list!=null && list.size()!=0) selectEvent(list.get(0));
-            }
-
-            @Override public void onGetUserData(User user) {
-                SLog.e("♦onGetUserData");
-                SLog.e("user.getName() = "+user.getName());
-                SLog.e("user.getEmail() = "+user.getEmail());
-
-            }
-            @Override public void onGetLastEvent(Event event) {
-                SLog.e("♦onGetLastEvent");
-                lastEvent.setValue(event);
-            }
-            @Override public void onGetBestEvent(Event event) {
-                SLog.e("♦onGetBestEvent");
-                bestEvent.setValue(event);
-            }
-        };
 
         selectedTraining = new MutableLiveData<>();
         selectedEvent = new MutableLiveData<>();
@@ -123,6 +88,7 @@ public class MainViewModel extends ViewModel {
                 if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
                     String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                     signedLogin.setValue(email);
+                    initFireDB(email);
                     loadAllTrainings();
                     loadAllExercises();
                     getUserData();
@@ -143,6 +109,37 @@ public class MainViewModel extends ViewModel {
         fireAuth.loginUserAccount(login.getValue(), password.getValue());
     }
 
+    private void initFireDB(String email) {
+        db = new FirebaseDatabase(email) {
+            @Override public void onGetTrainings(ArrayList<Training> list) {
+                trainings.setValue(list);
+                loadEventsForTraining(list.get(0));
+            }
+            @Override public void onGetExercises(ArrayList<Exercise> list) {
+                exercises.setValue(list);
+                for (Exercise ex:list) {
+                    exerciseDictionary.put(ex.getId(), ex.getName());
+                }
+            }
+            @Override public void onGetEvents(ArrayList<Event> list) {
+                events.setValue(list);
+                if (list!=null && list.size()!=0) {
+                    selectEvent(0);
+                    for (Event event:list) {
+                        event.setName(exerciseDictionary.get(event.getExerciseId()));
+                    }
+                }
+            }
+            @Override public void onGetUserData(User user) {
+            }
+            @Override public void onGetLastEvent(Event event) {
+                lastEvent.setValue(event);
+            }
+            @Override public void onGetBestEvent(Event event) {
+                bestEvent.setValue(event);
+            }
+        };
+    }
 
 
     void completeEvent() {
@@ -163,9 +160,6 @@ public class MainViewModel extends ViewModel {
     }
     public MutableLiveData<ArrayList<Training>> getTrainings() {
         return trainings;
-    }
-    public MutableLiveData<ArrayList<WorkoutSet>> getWorkoutSets() {
-        return sets;
     }
 
     public MutableLiveData<Integer> getSelectedPage() {
@@ -190,7 +184,7 @@ public class MainViewModel extends ViewModel {
     public MutableLiveData<Training> getSelectedTraining() {
         return selectedTraining;
     }
-    public MutableLiveData<Event> getSelectedEvent() {
+    public MutableLiveData<Integer> getSelectedEvent() {
         return selectedEvent;
     }
     public MutableLiveData<Event> getLastEvent() {
@@ -203,41 +197,42 @@ public class MainViewModel extends ViewModel {
     /**Список всех тренировок пользователя*/
     public void loadAllTrainings() {
         SLog.e("loadAllTrainings");
-        db.getTrainings(signedLogin.getValue());
+        db.getTrainings();
     }
     /**Список всех упражнений пользователя*/
     public void loadAllExercises() {
-        db.getExercises(signedLogin.getValue());
+        db.getExercises();
     }
 
     /***/
     public void getUserData() {
-        db.getUserData(signedLogin.getValue());
+        db.getUserData();
     }
 
 
     public void loadEventsForTraining(Training training) {
         // TODO: 10.11.2023 если уже загружена -- не загружать
         selectedTraining.setValue(training);
-        db.getEvents(signedLogin.getValue(), training.getId());
+        db.getEvents(training.getId());
     }
 
-    private void getLastAndBestEvent(Event event) {
-        Exercise exercise = getExerciseById(event.getExerciseId());
+    private void getLastAndBestEvent(String exerciseId) {
+        Exercise exercise = getExerciseById(exerciseId);
         String lastId = exercise.getLastEventId();
         String bestId = exercise.getBestEventId();
-        db.getLastEvent(signedLogin.getValue(), lastId);
-        db.getBestEvent(signedLogin.getValue(), bestId);
+        db.getLastEvent(lastId);
+        db.getBestEvent(bestId);
     }
 
-    public void selectEvent(Event event) {
+    public void selectEvent(int position) {
         SLog.e("selectEvent");
-        getLastAndBestEvent(event);
-        selectedEvent.postValue(event);
+        Event event = events.getValue().get(position);
+        getLastAndBestEvent(event.getExerciseId());
+        selectedEvent.postValue(position);
     }
 
     public void addWorkout(WorkoutSet set) {
-        Event current = selectedEvent.getValue();
+        Event current = events.getValue().get(selectedEvent.getValue());
         Event last = lastEvent.getValue();
         Event best = bestEvent.getValue();
         ArrayList<WorkoutSet> lastSet = null;
@@ -252,21 +247,21 @@ public class MainViewModel extends ViewModel {
 
         current.setRate(rate);//todo обновление рейтинга ещё не сохранено в БД
 
-        selectedEvent.setValue(current);
+        selectedEvent.setValue(selectedEvent.getValue());
 
-        db.updateWorkoutSet(signedLogin.getValue(), current);//сохранение в БД
+        db.updateWorkoutSet(current);//сохранение в БД
     }
 
     /**Зарегить новый аккаунт*/
     public void signUp(String login, String password) {
         fireAuth.registerNewUser(login, password);
-        db.createUser(login);
+        db.createUser();
     }
 
     /**Войти в аккаунт*/
     public void signIn(String login, String password) {
         fireAuth.loginUserAccount(login, password);
-        db.createUser(login);// TODO: 22.08.2023 для тестирования
+        db.createUser();// TODO: 22.08.2023 для тестирования
         db.connect(login);
     }
 
@@ -276,7 +271,7 @@ public class MainViewModel extends ViewModel {
             if (ex.isChecked()) list.add(new Event(ex.getId()));
         }
         Training training = new Training(signedLogin.getValue());
-        db.addTraining(training, list, signedLogin.getValue());
+        db.addTraining(training, list);
     }
 
     public void getUncheckedEvent() {
@@ -296,4 +291,27 @@ public class MainViewModel extends ViewModel {
     }
 
 
+    /**Завершение выполнения упражнения. После завершения этот ивент становится последним в
+     * упражнении, также сравнивается ивент с лучшим и, если это рекорд, то ивент становится bestEvent*/
+    public void completeSelectedEvent() {
+        if (events.getValue()==null) return;
+        if (selectedEvent.getValue()==null) return;
+
+        Event event = events.getValue().get(selectedEvent.getValue());
+        String exerciseId = event.getExerciseId();
+        event.setComplete(true);
+
+        ArrayList<WorkoutSet> last = null;
+        ArrayList<WorkoutSet> best = null;
+        if (lastEvent.getValue()!=null) last = lastEvent.getValue().getWorkoutSetList();
+        if (bestEvent.getValue()!=null) best = bestEvent.getValue().getWorkoutSetList();
+
+        int compareResult = Utils.compareWorkouts(event.getWorkoutSetList(), last, best);
+        if (compareResult==BEST || compareResult==BEST_NEW_WEIGHT) db.updateExerciseBest(exerciseId, event.getId());
+        event.setRate(compareResult);
+
+        db.completeEvent(event);
+        db.updateExerciseLast(exerciseId, event.getId());
+
+    }
 }

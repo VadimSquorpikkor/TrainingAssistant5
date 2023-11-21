@@ -29,4 +29,11 @@
 
     <color name="grey">#424242</color>
     <color name="orange_light">#FA8A66</color>
+
+    <color name="rate_red">#FF0000</color>
+    <color name="rate_orange">#FF8800</color>
+    <color name="rate_yellow">#FFFF00</color>
+    <color name="rate_green">#00FF00</color>
+    <color name="rate_blue">#5588FF</color>
+
 </resources>

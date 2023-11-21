@@ -1,17 +1,22 @@
 package com.squorpikkor.trainingassistant5.adapter;
 
+import static com.squorpikkor.trainingassistant5.App.getContext;
+
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squorpikkor.trainingassistant5.App;
 import com.squorpikkor.trainingassistant5.R;
 import com.squorpikkor.trainingassistant5.SLog;
+import com.squorpikkor.trainingassistant5.Utils;
 import com.squorpikkor.trainingassistant5.entity.Event;
 
 import java.util.ArrayList;
@@ -21,7 +26,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Adap
     private ArrayList<Event> list;
 
     public interface OnItemClickListener {
-        void onItemClick(Event event);
+        void onItemClick(int position);
     }
 
     private OnItemClickListener listener;
@@ -53,8 +58,14 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Adap
         SLog.e("result = "+event.getWorkoutSet());
         holder.name.setText(event.getName());
         holder.result.setText(event.getWorkoutSet()==null?
-                App.getContext().getString(R.string.empty_value):event.getWorkoutSet().equals("null")?
-                        App.getContext().getString(R.string.empty_value):event.getWorkoutSet());
+                getContext().getString(R.string.empty_value):event.getWorkoutSet().equals("null")?
+                        getContext().getString(R.string.empty_value):event.getWorkoutSet());
+        int color = Utils.getRateColor(event.getRate());
+        SLog.e("rate = "+event.getRate());
+        SLog.e("isComplete = "+event.isComplete());
+        // TODO: 21.11.2023 цвет
+        //if (event.isComplete()) holder.rate.setColorFilter(App.getContext().getResources().getColor(color));
+        //if (event.isComplete()) holder.rate.setColorFilter(getContext().getResources().getColor(color));
     }
 
     @Override
@@ -65,15 +76,17 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Adap
     public class AdapterViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView name, result;
+        private final ImageView rate;
 
         public AdapterViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.name);
             result = itemView.findViewById(R.id.result);
+            rate = itemView.findViewById(R.id.rate);
 
             itemView.setOnClickListener(v->{
-                if (listener!=null) listener.onItemClick(list.get(getAdapterPosition()));
+                if (listener!=null) listener.onItemClick(getAdapterPosition());
             });
         }
     }

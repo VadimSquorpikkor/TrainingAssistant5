@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/vertical"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
@@ -32,56 +34,77 @@
         app:layout_constraintTop_toBottomOf="@+id/title1"
         />
 
-    <LinearLayout style="@style/horizontalCenter"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        style="@style/horizontalCenter"
         android:gravity="top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_name">
 
-        <LinearLayout style="@style/vertical" android:layout_weight="1">
+        <LinearLayout
+            style="@style/vertical"
+            android:layout_weight="1">
 
-            <TextView style="@style/textH3" android:text="Предыдущий"/>
+            <TextView
+                style="@style/textH3"
+                android:text="Предыдущий" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/last_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/vertical" android:layout_weight="1">
+        <LinearLayout
+            style="@style/vertical"
+            android:layout_weight="1">
 
-            <TextView style="@style/textH3" android:text="Сейчас"/>
+            <TextView
+                style="@style/textH3"
+                android:text="Сейчас" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
-        <LinearLayout style="@style/vertical" android:layout_weight="1">
+        <LinearLayout
+            style="@style/vertical"
+            android:layout_weight="1">
 
-            <TextView style="@style/textH3" android:text="Лучший"/>
+            <TextView
+                style="@style/textH3"
+                android:text="Лучший" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/best_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
+
 
         </LinearLayout>
 
 
     </LinearLayout>
 
-
     <ImageView
         android:id="@+id/add_set"
         style="@style/FloatRoundButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/button_done"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="16dp"
+        android:src="@drawable/ico_done"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

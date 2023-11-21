@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -82,4 +84,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    boolean letExit;
+
+    @Override
+    public void onBackPressed() {
+        if (letExit) {
+            finish();
+        } else {
+            letExit=true;
+            Toast.makeText(this, getString(R.string.tap_back_to_exit), Toast.LENGTH_SHORT).show();
+            new Thread(() -> {
+                try {Thread.sleep(2500);}
+                catch (InterruptedException e) {throw new RuntimeException(e);}
+                letExit=false;
+            }).start();
+        }
+    }
 }

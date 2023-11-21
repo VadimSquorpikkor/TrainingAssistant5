@@ -2,7 +2,6 @@ package com.squorpikkor.trainingassistant5.data;
 
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -32,41 +31,34 @@ public abstract class FirebaseDatabase {
     private static final String USER_NAME = "name";
 
     private static final String TABLE_EXERCISES = "exercises";
-    private static final String EXERCISES_ID = "id";
     private static final String EXERCISES_PARENT = "parent_id";
     private static final String EXERCISE_NAME = "name";
     private static final String EXERCISE_BEST_ID = "best";
     private static final String EXERCISE_LAST_ID = "last";
     private static final String EXERCISE_PREDEFINED = "pred";
 
-
     //В контексте Firebase для Training и id, и date, и имя документа — это одно и то же значение,
     //поэтому при работе с этой БД будет использоваться только имя документа для получения и id, и даты
     private static final String TABLE_TRAINING = "trainings";
-    private static final String TRAINING_ID = "id";
     private static final String TRAINING_PARENT = "parent_id";
     private static final String TRAINING_DATE = "date";
     private static final String TRAINING_WEIGHT = "weight";
     private static final String TRAINING_EFFECTIVITY = "eff";
 
     private static final String TABLE_EVENT = "events";
-    private static final String EVENT_ID = "id";
     private static final String EVENT_PARENT = "parent_id";
     private static final String EVENT_EX_ID = "ex_id";
     private static final String EVENT_SET = "set";
     private static final String EVENT_IS_COMPLETE = "is_complete";
+    private static final String EVENT_RATE = "rate";
 
     private final FirebaseFirestore db;
+    private final String login;
 
-    // TODO: 21.09.2023 убрать из методов String login (будет задан в переменную при инициализации БД)
-
-    public FirebaseDatabase() {
+    public FirebaseDatabase(String login) {
         db = FirebaseFirestore.getInstance();
-        //////////////////////////addExercise(new Exercise("qweqwe"), "vadimserikov11@gmail.com");
+        this.login = login;
     }
-
-
-
 
     public abstract void onGetTrainings(ArrayList<Training> list);
     public abstract void onGetExercises(ArrayList<Exercise> list);
@@ -81,15 +73,20 @@ public abstract class FirebaseDatabase {
         String set = String.valueOf(document.get(EVENT_SET));
         String parent = String.valueOf(document.get(EVENT_PARENT));
         boolean isComplete = String.valueOf(document.get(EVENT_IS_COMPLETE)).equals("true");
+        int rate = -1;
+        try { rate = Integer.parseInt(String.valueOf(document.get(EVENT_RATE)));}
+        catch (Exception ignored){}
+
         Event event = new Event(ex_id);
         event.setId(id);
         event.setParentId(parent);
         event.setWorkoutSet(set);
         event.setComplete(isComplete);
+        event.setRate(rate);
         return event;
     }
 
-    public void getLastEvent(String login, String lastId) {
+    public void getLastEvent(String lastId) {
         db.collection(TABLE_USER).document(login)
                 .collection(TABLE_EVENT).document(lastId)
                 .get().addOnCompleteListener(task -> {
@@ -106,7 +103,7 @@ public abstract class FirebaseDatabase {
                 });
     }
 
-    public void getBestEvent(String login, String bestId) {
+    public void getBestEvent(String bestId) {
         SLog.e("best = "+bestId);
         if (bestId.equals("")) return;
         db.collection(TABLE_USER).document(login)
@@ -125,12 +122,12 @@ public abstract class FirebaseDatabase {
                 });
     }
 
-    public void getUserData(String login) {
+    public void getUserData() {
         db.collection(TABLE_USER).document(login)
         .get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
+                if (document!=null && document.exists()) {
                     Log.e(TAG, "DocumentSnapshot data: " + document.getData());
                     onGetUserData(new User(String.valueOf(document.get(USER_ID)), String.valueOf(document.get(USER_NAME))));
                 } else {
@@ -142,7 +139,7 @@ public abstract class FirebaseDatabase {
         });
     }
 
-    public void getTrainings(String login) {
+    public void getTrainings() {
         db.collection(TABLE_USER).document(login)
                 .collection(TABLE_TRAINING)
                 .get()
@@ -165,7 +162,7 @@ public abstract class FirebaseDatabase {
                 });
     }
 
-    public void getExercises(String login) {
+    public void getExercises() {
         db.collection(TABLE_USER).document(login).collection(TABLE_EXERCISES)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -196,7 +193,7 @@ public abstract class FirebaseDatabase {
                 });
     }
 
-    public void getEvents(String login, String trainingId) {
+    public void getEvents(String trainingId) {
         db.collection(TABLE_USER).document(login)
 
                 .collection(TABLE_EVENT)
@@ -224,17 +221,44 @@ public abstract class FirebaseDatabase {
 //                "favorites.color" to "Red"
 //    ))
 
-    public void updateWorkoutSet(String login, Event event) {
+    /***/
+    public void updateWorkoutSet(Event event) {
         db.collection(TABLE_USER).document(login)
                 .collection(TABLE_EVENT).document(event.getId())
-                .update(EVENT_SET, event.getWorkoutSet()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.e(TAG, "updated successfully");
-                    }
-                })
-        ;
+                .update(EVENT_SET, event.getWorkoutSet()).addOnSuccessListener(unused -> Log.e(TAG, "updated successfully"));
+    }
 
+    /***/
+    public void completeEvent(Event event) {
+        db.collection(TABLE_USER).document(login)
+                .collection(TABLE_EVENT).document(event.getId())
+                .update(EVENT_IS_COMPLETE, event.isComplete()).addOnSuccessListener(unused -> Log.e(TAG, "updated successfully"));
+        db.collection(TABLE_USER).document(login)
+                .collection(TABLE_EVENT).document(event.getId())
+                .update(EVENT_RATE, event.getRate()).addOnSuccessListener(unused -> Log.e(TAG, "updated successfully"));
+    }
+
+
+    /**Обновить id лучшего ивента данного упражнения. После обновления поля список упражнений будет перезагружен
+     *
+     * @param id идентификатор упражнения
+     * @param bestId идентификатор лучшего ивента
+     */
+    public void updateExerciseBest(String id, String bestId) {
+        db.collection(TABLE_USER).document(login)
+                .collection(TABLE_EXERCISES).document(id)
+                .update(EXERCISE_BEST_ID, bestId).addOnSuccessListener(unused -> getExercises());
+    }
+
+    /**Обновить id последнего ивента данного упражнения. После обновления поля список упражнений будет перезагружен
+     *
+     * @param id идентификатор упражнения
+     * @param lastId идентификатор последнего ивента
+     */
+    public void updateExerciseLast(String id, String lastId) {
+        db.collection(TABLE_USER).document(login)
+                .collection(TABLE_EXERCISES).document(id)
+                .update(EXERCISE_LAST_ID, lastId).addOnSuccessListener(unused -> getExercises());
     }
 
 //--------------------------------------------------------------------------------------------------
@@ -248,7 +272,7 @@ public abstract class FirebaseDatabase {
          //userData = db.collection(TABLE_USER).document(user);
     }
 
-    public void createUser(String login) {
+    public void createUser() {
         if (login.equals("")) return;
 
         String userName = login.toLowerCase();
@@ -272,7 +296,7 @@ public abstract class FirebaseDatabase {
 
 
 //--------------------------------------------------------------------------------------------------
-    public void addTraining(Training training, ArrayList<Event> list, String login) {
+    public void addTraining(Training training, ArrayList<Event> list) {
         Map<String, Object> data = new HashMap<>();
         data.put(TRAINING_DATE, training.getDate());
 
@@ -281,28 +305,28 @@ public abstract class FirebaseDatabase {
                 .set(data)
                 .addOnSuccessListener(aVoid -> {
 
-                    addNewTrainingListener(login);//todo а может без addNewTrainingListener, а сразу вызывать getTrainings(login);???
+                    addNewTrainingListener();//todo а может без addNewTrainingListener, а сразу вызывать getTrainings(login);???
                     Log.e(TAG, "DocumentSnapshot successfully written!");
                     for (Event event : list) {
-                        addEvent(event, login, training.getDate());
+                        addEvent(event, training.getDate());
                     }
                 })
                 .addOnFailureListener(onFailureListener);
     }
 
-    public void addExercise(Exercise exercise, String login) {
+    public void addExercise(Exercise exercise) {
         Map<String, Object> data = new HashMap<>();
         data.put(EXERCISE_NAME, exercise.getName());
 
         db.collection(TABLE_USER).document(login)
                 .collection(TABLE_EXERCISES).document()
                 .set(data)
-                .addOnSuccessListener(aVoid -> addNewExerciseListener(login))
+                .addOnSuccessListener(aVoid -> addNewExerciseListener())
                 .addOnFailureListener(onFailureListener);
     }
 
 
-    public void addEvent(Event event, String login, String trainingId) {
+    public void addEvent(Event event, String trainingId) {
 
         Map<String, Object> data = new HashMap<>();
         data.put(EVENT_EX_ID, event.getExerciseId());
@@ -311,34 +335,34 @@ public abstract class FirebaseDatabase {
         db.collection(TABLE_USER).document(login)
                 .collection(TABLE_EVENT).document(event.getExerciseId())
                 .set(data, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> addNewEventListener(login, trainingId))
+                .addOnSuccessListener(aVoid -> addNewEventListener(trainingId))
                 .addOnFailureListener(onFailureListener);
     }
 
 
 //--------------------------------------------------------------------------------------------------
 
-    void addNewTrainingListener(String login) {
+    void addNewTrainingListener() {
         db.collection(TABLE_USER).document(login)
                 .collection(TABLE_TRAINING).addSnapshotListener((queryDocumentSnapshots, error) -> {
                     Log.e(TAG, "listen ev0");
-                    getTrainings(login);
+                    getTrainings();
                 });
     }
 
-    void addNewExerciseListener(String login) {
+    void addNewExerciseListener() {
         db.collection(TABLE_USER).document(login)
                 .collection(TABLE_EXERCISES).addSnapshotListener((queryDocumentSnapshots, error) -> {
                     Log.e(TAG, "listen ev1");
-                    getExercises(login);
+                    getExercises();
                 });
     }
 
-    void addNewEventListener(String login, String trainingId) {
+    void addNewEventListener(String trainingId) {
         db.collection(TABLE_USER).document(login)
                 .collection(TABLE_EVENT).addSnapshotListener((queryDocumentSnapshots, error) -> {
                     Log.e(TAG, "listen ev2");
-                    getEvents(login, trainingId);
+                    getEvents(trainingId);
                 });
     }
 

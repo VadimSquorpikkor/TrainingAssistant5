@@ -14,5 +14,5 @@
     <string name="tab3">Упражнение</string>
 
     <string name="empty_value">- - -</string>
-    <string name="emp">- - -</string>
+    <string name="tap_back_to_exit">Для выхода нажмите \"Назад\" ещё раз</string>
 </resources>

@@ -26,20 +26,23 @@ import com.squorpikkor.trainingassistant5.entity.Training;
 public class EventListFragment extends Fragment {
 
     private MainViewModel mViewModel;
-    View view;
+    private TextView dateText, effText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ThemeUtils.onActivityCreateSetTheme(getActivity());
-        view = inflater.inflate(R.layout.fragment_training, container, false);
+        View view = inflater.inflate(R.layout.fragment_training, container, false);
         mViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+
+        dateText = view.findViewById(R.id.date);
+        effText  = view.findViewById(R.id.eff);
 
         RecyclerView recycler = view.findViewById(R.id.recycler);
         EventListAdapter adapter = new EventListAdapter();
         recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recycler.setAdapter(adapter);
-        adapter.setOnItemClickListener(event -> {
-            mViewModel.selectEvent(event);
+        adapter.setOnItemClickListener(position -> {
+            mViewModel.selectEvent(position);
             mViewModel.getSelectedPage().setValue(PAGE_EXERCISE);
         });
         mViewModel.getEvents().observe(getViewLifecycleOwner(), adapter::setList);
@@ -50,8 +53,7 @@ public class EventListFragment extends Fragment {
     }
 
     private void updateTraining(Training training) {
-        ((TextView)view.findViewById(R.id.date)).setText(training.getFormattedDate());
-        ((TextView)view.findViewById(R.id.eff)).setText(training.getEffectivity());//todo
-
+        dateText.setText(training.getFormattedDate());
+        effText.setText(training.getEffectivity());//todo
     }
 }

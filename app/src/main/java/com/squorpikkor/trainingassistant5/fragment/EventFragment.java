@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -45,7 +46,9 @@ public class EventFragment extends Fragment {
 //            mViewModel.selectExercise(exercise);
 //            openInfoFragment();
         });
-        mViewModel.getSelectedEvent().observe(getViewLifecycleOwner(), event -> {
+        mViewModel.getSelectedEvent().observe(getViewLifecycleOwner(), position -> {
+            if (position==null) return;
+            Event event = mViewModel.getEvents().getValue().get(position);
             updateFragment(event);
             adapter.setList(event.getWorkoutSetList());
         });
@@ -70,6 +73,8 @@ public class EventFragment extends Fragment {
             new AddWorkoutDialog().show(getParentFragmentManager(), null);
         });
 
+        view.findViewById(R.id.button_done).setOnClickListener(v->mViewModel.completeSelectedEvent());
+
         return view;
     }
 
@@ -77,6 +82,7 @@ public class EventFragment extends Fragment {
         selectedExercise = mViewModel.getExerciseById(event.getExerciseId());
         ((TextView)view.findViewById(R.id.event_name)).setText(selectedExercise.getName());//todo выбирать имя тренировки при сеттинге selectedEvent
         ((TextView)view.findViewById(R.id.rate)).setText(""+event.getRate());
+        view.findViewById(R.id.button_done).setEnabled(!event.isComplete());
     }
 
 }
